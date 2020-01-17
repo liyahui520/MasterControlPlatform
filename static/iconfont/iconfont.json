@@ -1,0 +1,23 @@
+{
+  "id": "1453047",
+  "name": "icon",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7216570",
+      "name": "对号 (1)",
+      "font_class": "duihao",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "7509531",
+      "name": "设备",
+      "font_class": "shebei",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    }
+  ]
+}

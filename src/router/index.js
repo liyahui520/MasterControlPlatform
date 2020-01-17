@@ -12,6 +12,7 @@ import Layout from '@/layout'
 // import tableRouter from './modules/table'
 // import nestedRouter from './modules/nested'
 import productRouter from './modules/productmanaement'
+import baseRouter from './modules/base'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -131,6 +132,7 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   productRouter,
+  baseRouter,
   // {
   //   path: '/permission',
   //   component: Layout,

@@ -189,5 +189,45 @@ export default {
     Oper_IP: 'IP',
     Oper_Create_Time: 'CreateTime',
     Oper_Ver:'Version'
-  }
+  },
+  
+  pmedicines: {
+    BarCode: 'Bar Code',
+    ProviderName: 'Supplier',
+    Ingredient: 'Component',
+    IsAnaesthesia: 'Is Controlled',
+    DrugsName: 'Product Name',
+    InstorePrice: 'Cost Price',
+    OutstorePrice: 'Selling Price',
+    UnitName: 'Dosing Unit',
+    Specific: 'Specifications',
+    Count: 'Stock',
+    UsingMethod: 'Using Method',
+    EnglishName: 'English Name',
+    DrugsNameLetter: 'Drugs Name Letter',
+    InstoreUnitName: 'Instore Unit',
+    Deleted: 'Deleted',
+    MemberPrice: 'Member Price',
+    InsertDate: 'InsertDate',
+    DoNotDiscount: 'DoNot Discount',
+    ShowAll: 'Batch',
+    ItemCode: 'Product Code',
+    Brand: 'Manufacturer',
+    AllowSaleForNoneStock: 'AllowSaleForNoneStock',
+    DosingWay: 'Dosing Way',
+    CategoryName: 'Directory',
+    CostPrice: 'Cost Price',
+    CommonName: 'Common Name',
+    OutStoreUnit: 'Out Store Unit',
+    CanOrder: 'Bookings',
+    CanSell: 'Marketable',
+    Brand2:'Brand'
+  },
+  common: {
+    yes: 'YES',
+    no: 'NO',
+    yesDeleted: 'Enable',
+    noDeleted:'Discontinue'
+  },
+  query:'Search'
 }

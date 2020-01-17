@@ -11,12 +11,14 @@ import '@/styles/index.scss' // global css
 
 import App from './App'
 import store from './store'
-import router from './router'
-
+import router from './router' 
 import i18n from './lang' // internationalization
 import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
+import { currency , dateFormat } from './utils/index'
+Vue.filter("currency", currency)
+Vue.filter("dateFormat", dateFormat)
 
 import * as filters from './filters' // global filters
 

@@ -37,7 +37,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -160,12 +160,12 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -244,7 +244,7 @@ export function getTime(type) {
 export function debounce(func, wait, immediate) {
   let timeout, args, context, timestamp, result
 
-  const later = function() {
+  const later = function () {
     // 据上一次触发时间间隔
     const last = +new Date() - timestamp
 
@@ -261,7 +261,7 @@ export function debounce(func, wait, immediate) {
     }
   }
 
-  return function(...args) {
+  return function (...args) {
     context = this
     timestamp = +new Date()
     const callNow = immediate && !timeout
@@ -344,4 +344,88 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+/**
+ * 
+ * @param {Object} data 
+ * @param {Array} config 
+ */
+export function getListData(data, config) {
+  var id = config.id || 'id';
+  var pid = config.pid || 'pid';
+  var children = config.children || 'children';
+  var label=config.label || 'label';
+  var idMap = {};
+  var jsonTree = [];
+  data.forEach(function (v) {
+    idMap[v[id]] = v;
+  });
+  data.forEach(function (v) {
+    var parent = idMap[v[pid]];
+    if (parent) {
+      !parent[children] && (parent[children] = []);
+      parent[children].push(v);
+    } else {
+      jsonTree.push(v);
+    }
+  });
+  return jsonTree;
+}
+
+/**
+ * 
+ * @param {String} date 
+ */
+export function dateFormat(date) {
+  var t = new Date(date); //row 表示一行数据, updateTime 表示要格式化的字段名称
+      var year = t.getFullYear(),
+        month = t.getMonth() + 1,
+        day = t.getDate(),
+        hour = t.getHours(),
+        min = t.getMinutes(),
+        sec = t.getSeconds();
+      var newTime =
+        year +
+        "-" +
+        (month < 10 ? "0" + month : month) +
+        "-" +
+        (day < 10 ? "0" + day : day) +
+        " " +
+        (hour < 10 ? "0" + hour : hour) +
+        ":" +
+        (min < 10 ? "0" + min : min) +
+        ":" +
+        (sec < 10 ? "0" + sec : sec);
+      return newTime;
+}
+
+const digitsRE = /(\d{3})(?=\d)/g
+/**
+ * [currency 金额格式化函数]
+ * @param  {[type]} value    [传进来的值]
+ * @param  {[type]} currency [货币符号]
+ * @param  {[type]} decimals [小数位数]
+ * @return {[type]}          [description]
+ */
+export function currency (value, currency, decimals) {
+  value = parseFloat(value)
+  if (!isFinite(value) || (!value && value !== 0)) return ''
+  currency = currency != null ? currency : '$'
+  decimals = decimals != null ? decimals : 2
+  var stringified = Math.abs(value).toFixed(decimals)
+  var _int = decimals
+    ? stringified.slice(0, -1 - decimals)
+    : stringified
+  var i = _int.length % 3
+  var head = i > 0
+    ? (_int.slice(0, i) + (_int.length > 3 ? ',' : ''))
+    : ''
+  var _float = decimals
+    ? stringified.slice(-1 - decimals)
+    : ''
+  var sign = value < 0 ? '-' : ''
+  return sign + currency + head +
+    _int.slice(i).replace(digitsRE, '$1,') +
+    _float
 }

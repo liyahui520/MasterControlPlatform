@@ -55,7 +55,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { param, parseTime } from "@/utils/index";
+import { param, parseTime ,dateFormat} from "@/utils/index";
 import Pagination from "@/components/Pagination/index";
 export default {
   name: "Logs",
@@ -64,30 +64,12 @@ export default {
     ...mapGetters({ logData: "logLoadData" })
   },
   created() {
+    
     this.loadData();
   },
   methods: {
-    dateFormat: function(row, column) {
-      var t = new Date(row.operCreateTime); //row 表示一行数据, updateTime 表示要格式化的字段名称
-      var year = t.getFullYear(),
-        month = t.getMonth() + 1,
-        day = t.getDate(),
-        hour = t.getHours(),
-        min = t.getMinutes(),
-        sec = t.getSeconds();
-      var newTime =
-        year +
-        "-" +
-        (month < 10 ? "0" + month : month) +
-        "-" +
-        (day < 10 ? "0" + day : day) +
-        " " +
-        (hour < 10 ? "0" + hour : hour) +
-        ":" +
-        (min < 10 ? "0" + min : min) +
-        ":" +
-        (sec < 10 ? "0" + sec : sec);
-      return newTime;
+    dateFormat: function(row, column) { //row 表示一行数据, updateTime 表示要格式化的字段名称
+      return dateFormat(row.operCreateTime) 
     },
     pagination(param) {
       this.params.currentPage = param.page;

@@ -9,3 +9,8 @@ export default {
   name: 'App'
 }
 </script>
+<style>
+.el-table th{
+  text-align: center !important;
+}
+</style>

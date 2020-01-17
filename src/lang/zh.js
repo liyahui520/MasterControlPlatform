@@ -65,7 +65,9 @@ export default {
     profile: '个人中心',
     drugs: '药品',
     consumables: '消耗品',
-    products:'产品管理'
+    products: '产品管理',
+    Unit: '单位',
+  Base:'基础数据'
   },
   navbar: {
     dashboard: '首页',
@@ -187,5 +189,50 @@ export default {
     Oper_IP: '操作IP',
     Oper_Create_Time: '操作时间',
     Oper_Ver:'操作版本'
-  }
+  },
+  pmedicines: {
+    BarCode: '条形码',
+    ProviderName: '供应商',
+    Ingredient: '成分(化学名)',
+    IsAnaesthesia: '是否管控',
+    DrugsName: '产品名称',
+    InstorePrice: '成本价',
+    OutstorePrice: '销售价',
+    UnitName: '投药单位',
+    Specific: '规格',
+    Count: '库存',
+    UsingMethod: '使用方式',
+    EnglishName: '英文名',
+    DrugsNameLetter: '拼音简写',
+    InstoreUnitName: '入库单位',
+    OutstoreUnitName: '出库单位',
+    Deleted: '状态',
+    MemberPrice: '会员价',
+    InsertDate: '创建时间',
+    DoNotDiscount: '是否打折',
+    ShowAll: '有批次',
+    ItemCode: '产品编码',
+    Brand: '生产商',
+    AllowSaleForNoneStock: '是否允许零库存销售',
+    DosingWay: '投药方式',
+    CategoryName: '所属目录',
+    CostPrice: '入库参考价',
+    CommonName: '通用名',
+    OutStoreUnit: '出库单位',
+    CanOrder: '可订',
+    CanSell: '可销',
+    Brand2: '品牌',
+    DrugsNameDesc: '产品名称，通用名，英文名，拼音',
+    PEdit: '批量修改',
+    PDelete: '批量删除',
+    Lower:'批量下发'
+  },
+  common: {
+    yes: '是',
+    no: '否',
+    yesDeleted: '启用',
+    noDeleted:'停用'
+  },
+  query: '查询',
+  
 }
