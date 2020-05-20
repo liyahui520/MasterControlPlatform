@@ -1,14 +1,14 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px" class="formItem">
-      <el-form-item :label="$t('unit.HeadOfficeCode')">
+      <el-form-item :label="$t('cataLog.HeadOfficeCode')">
         <el-input v-model="searchInfo.HeadOfficeCode" class="inputWidth" />
       </el-form-item>
-      <el-form-item :label="$t('unit.UnitName')">
-        <el-input v-model="searchInfo.UnitName" class="inputWidth" />
+      <el-form-item :label="$t('cataLog.CataLogName')">
+        <el-input v-model="searchInfo.CateLogName" class="inputWidth" />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="searchUnit">{{$t('table.search')}}</el-button>
+        <el-button type="primary" @click="searchCateLog">{{$t('table.search')}}</el-button>
         <el-button type="success" @click="showDialog">{{$t('table.add')}}</el-button>
       </el-form-item>
     </el-form>
@@ -22,6 +22,7 @@
                 class="buRight"
                 type="danger"
                 icon="el-icon-delete"
+                @click="batchDelete"
               >{{ $t('pmedicines.PDelete') }}</el-button>
               <el-button
                 class="buRight"
@@ -34,53 +35,50 @@
               border
               stripe
               style="width: 99.9%;height:100%;overflow:hidden;"
+              ref="multipleTable"
             >
               <el-table-column type="selection" align="center" width="55"></el-table-column>
               <!-- 机构名称 -->
-              <el-table-column prop="OrgName" :label="$t('unit.OrgName')" width="300">
-                <template slot-scope="scope">
-                  7790
-                </template>
-              </el-table-column>
+              <el-table-column prop="OrgName" :label="$t('cataLog.OrgName')" width="300"></el-table-column>
               <!-- 总部编码 -->
               <el-table-column
                 prop="SerialNumber"
                 :show-overflow-tooltip="true"
-                :label="$t('unit.HeadOfficeCode')"
+                :label="$t('cataLog.HeadOfficeCode')"
                 width="200"
               ></el-table-column>
               <!-- 项目名称 -->
               <el-table-column
                 prop="Name"
                 :show-overflow-tooltip="true"
-                :label="$t('unit.UnitName')"
+                :label="$t('cataLog.CataLogName')"
                 width="300"
               ></el-table-column>
               <!-- 英文名称 -->
               <el-table-column
                 prop="EnglishName"
                 :show-overflow-tooltip="true"
-                :label="$t('unit.EnglishName')"
+                :label="$t('cataLog.EnglishName')"
                 width="200"
               ></el-table-column>
               <!-- 创建时间 -->
-              <el-table-column prop="OrgId" :label="$t('unit.CreateTime')" width="180"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="250">
+              <el-table-column prop="OrgId" :label="$t('cataLog.CreateTime')" width="180"></el-table-column>
+              <el-table-column label="操作" width="250">
                 <template slot-scope="scope">
                   <el-button
                     type="text"
                     size="small"
                     @click="showDetail(scope.row)"
-                  >{{$t('unit.ShowDetail')}}</el-button>
+                  >{{$t('cataLog.ShowDetail')}}</el-button>
                   <el-button
                     type="text"
                     size="small"
-                    @click="editUnit(scope.row)"
+                    @click="editCateLog(scope.row)"
                   >{{$t('table.edit')}}</el-button>
                   <el-button
                     type="text"
                     size="small"
-                    @click="deleteUnit(scope.row)"
+                    @click="deleteCateLog(scope.row)"
                   >{{$t('table.delete')}}</el-button>
                 </template>
               </el-table-column>
@@ -100,24 +98,24 @@
         </el-card>
       </el-main>
     </el-container>
-    <el-dialog :title="$t('unit.AddUnit')" :visible.sync="dialogFormVisible" width="50%">
+    <el-dialog :title="$t('cataLog.AddCateLog')" :visible.sync="dialogFormVisible" width="50%">
       <el-form :model="form" :label-width="formLabelWidth">
-        <el-form-item :label="$t('unit.HeadOfficeCode')">
+        <el-form-item :label="$t('cataLog.HeadOfficeCode')">
           <el-input v-model="form.name" class="inputWidth" />
         </el-form-item>
-        <el-form-item :label="$t('unit.UnitName')">
+        <el-form-item :label="$t('cataLog.CataLogName')">
           <el-input v-model="form.name" class="inputWidth" />
         </el-form-item>
-        <el-form-item :label="$t('unit.EnglishName')">
+        <el-form-item :label="$t('cataLog.EnglishName')">
           <el-input v-model="form.name" class="inputWidth" />
         </el-form-item>
-        <el-form-item :label="$t('unit.Enable')">
+        <el-form-item :label="$t('cataLog.Enable')">
           <el-switch v-model="form.delivery" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
-        <el-button type="primary" @click="saveUnit">{{$t('table.confirm')}}</el-button>
+        <el-button type="primary" @click="saveCateLog">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -132,12 +130,12 @@ export default {
       form: {
         name: "",
         OrgName: "",
-        UnitName: ""
+        CateLogName: ""
       },
       //搜索条件对象
       searchInfo: {
         HeadOfficeCode: "", //总部编码
-        UnitName: "" //项目名称
+        CateLogName: "" //项目名称
       },
       tableData: [
         {
@@ -182,33 +180,17 @@ export default {
           startTime: "",
           usingMethod: -1
         }
-      },
-
-      loading:false
+      }
     };
   },
   methods: {
-    //加载单位列表
-    loadUnitList(){
-      this.loading = true;
-      this.params.params.category = this.categoryId;
-      this.$store
-        .dispatch("unit/getPsysListBykey", this.params)
-        .then(res => {
-          this.tableData = res.list;
-          this.total = res.total;
-          this.page = res.pageNum;
-          this.limit = res.pageSize;
-          this.loading = false;
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-    },
-    //搜索单位
-    searchUnit() {
+    batchDelete() {
       var _this = this;
-      console.log("点击了搜索按钮", _this.unit);
+      console.log(_this.$refs.multipleTable.store.states.selection)
+    },
+    //搜索目录
+    searchCateLog() {
+      var _this = this;
       _this.$notify({
         title: "成功",
         message: "点击了搜索按钮",
@@ -224,22 +206,22 @@ export default {
         type: "success"
       });
     },
-    //编辑单位
-    editUnit(rowObject) {
+    //编辑目录
+    editCateLog(rowObject) {
       var _this = this;
-      console.log("点击了编辑单位");
+      console.log("点击了编辑目录");
       _this.$notify({
         title: "成功",
-        message: "点击了编辑单位" + JSON.stringify(rowObject),
+        message: "点击了编辑目录" + JSON.stringify(rowObject),
         type: "success"
       });
     },
-    deleteUnit(rowObject) {
+    deleteCateLog(rowObject) {
       var _this = this;
-      console.log("点击了删除单位");
+      console.log("点击了删除目录");
       _this.$notify({
         title: "成功",
-        message: "点击了删除单位" + JSON.stringify(rowObject),
+        message: "点击了删除目录" + JSON.stringify(rowObject),
         type: "success"
       });
     },
@@ -253,7 +235,7 @@ export default {
       var _this = this;
       _this.dialogFormVisible = false;
     },
-    saveUnit() {
+    saveCateLog() {
       var _this = this;
       _this.dialogFormVisible = false;
       _this.$notify({

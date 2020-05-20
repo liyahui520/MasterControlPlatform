@@ -67,7 +67,11 @@ export default {
     consumables: '消耗品',
     products: '产品管理',
     Unit: '单位',
-  Base:'基础数据'
+    Catalog: '目录',
+    Businesstype:'管控管理',
+    Product: '制造商',
+    Supplier:'供应商',
+    Base: '基础数据'
   },
   navbar: {
     dashboard: '首页',
@@ -122,8 +126,8 @@ export default {
     importance: '重要性',
     type: '类型',
     remark: '点评',
-    search: '搜索',
-    add: '添加',
+    search: '搜 索',
+    add: '添 加',
     export: '导出',
     reviewer: '审核人',
     id: '序号',
@@ -133,11 +137,13 @@ export default {
     status: '状态',
     actions: '操作',
     edit: '编辑',
+    update: '修改',
     publish: '发布',
     draft: '草稿',
     delete: '删除',
     cancel: '取 消',
-    confirm: '确 定'
+    confirm: '确 定',
+    batchClean:'一键清洗'
   },
   example: {
     warning: '创建和编辑页面是不能被 keep-alive 缓存的，因为keep-alive 的 include 目前不支持根据路由来缓存，所以目前都是基于 component name 来进行缓存的。如果你想类似的实现缓存效果，可以使用 localStorage 等浏览器缓存方案。或者不要使用 keep-alive 的 include，直接缓存所有页面。详情见'
@@ -188,7 +194,7 @@ export default {
     Oper_Url: '请求URL',
     Oper_IP: '操作IP',
     Oper_Create_Time: '操作时间',
-    Oper_Ver:'操作版本'
+    Oper_Ver: '操作版本'
   },
   pmedicines: {
     BarCode: '条形码',
@@ -225,14 +231,44 @@ export default {
     DrugsNameDesc: '产品名称，通用名，英文名，拼音',
     PEdit: '批量修改',
     PDelete: '批量删除',
-    Lower:'批量下发'
+    Lower: '批量下发'
   },
   common: {
     yes: '是',
     no: '否',
     yesDeleted: '启用',
-    noDeleted:'停用'
+    noDeleted: '停用'
   },
   query: '查询',
-  
+
+  unit: {
+    OrgName: '机构名称',
+    UnitName: '项目名称',
+    Enable: '启用',
+    Deleted: '删除',
+    EnglishName: '英文名称',
+    HeadOfficeCode: '总部编码',
+    CreateTime: '创建时间',
+    AddUnit: '新增单位',
+    ShowDetail: '查看'
+  },
+  cataLog: {
+    OrgName: '机构名称',
+    CataLogName: '目录名称',
+    Enable: '启用',
+    Deleted: '删除',
+    EnglishName: '英文名称',
+    HeadOfficeCode: '总部编码',
+    AddCateLog: '新增目录',
+    CreateTime: '创建时间',
+    ShowDetail: '查看'
+  },
+  businessType:{
+    ProductType:'产品类型',
+    IsMasterControl:'是否总部管控',
+    IsClean:'是否已清洗',
+    AddOrg:'新增机构',
+    Placeholder:'请选择机构',
+    EditOrg:'编辑机构'
+  }
 }
