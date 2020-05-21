@@ -2,14 +2,13 @@
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px" class="formItem">
       <el-form-item :label="$t('unit.HeadOfficeCode')">
-        <el-input v-model="searchInfo.HeadOfficeCode" class="inputWidth" />
+        <el-input v-model="searchInfo.serialnumber" class="inputWidth" />
       </el-form-item>
       <el-form-item :label="$t('unit.UnitName')">
-        <el-input v-model="searchInfo.UnitName" class="inputWidth" />
+        <el-input v-model="searchInfo.name" class="inputWidth" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="searchUnit">{{$t('table.search')}}</el-button>
-        <el-button type="success" @click="showDialog">{{$t('table.add')}}</el-button>
       </el-form-item>
     </el-form>
     <el-container>
@@ -22,65 +21,68 @@
                 class="buRight"
                 type="danger"
                 icon="el-icon-delete"
+                @click="batchDeleteUnit"
               >{{ $t('pmedicines.PDelete') }}</el-button>
               <el-button
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
+                @click="batchFull"
               >{{ $t('pmedicines.Lower') }}</el-button>
+              <el-button
+                type="success"
+                class="buRight"
+                icon="el-icon-plus"
+                @click="showDialog"
+              >{{$t('table.add')}}</el-button>
             </el-row>
             <el-table
               :data="tableData"
               border
               stripe
+              v-loading="loading"
+              ref="unitTable"
               style="width: 99.9%;height:100%;overflow:hidden;"
             >
               <el-table-column type="selection" align="center" width="55"></el-table-column>
-              <!-- 机构名称 -->
-              <el-table-column prop="OrgName" :label="$t('unit.OrgName')" width="300">
-                <template slot-scope="scope">
-                  7790
-                </template>
-              </el-table-column>
               <!-- 总部编码 -->
               <el-table-column
-                prop="SerialNumber"
+                prop="serialnumber"
                 :show-overflow-tooltip="true"
                 :label="$t('unit.HeadOfficeCode')"
-                width="200"
+                width="300"
+                align="center"
               ></el-table-column>
               <!-- 项目名称 -->
               <el-table-column
-                prop="Name"
+                prop="name"
                 :show-overflow-tooltip="true"
                 :label="$t('unit.UnitName')"
-                width="300"
+                width="400"
               ></el-table-column>
               <!-- 英文名称 -->
               <el-table-column
-                prop="EnglishName"
+                prop="englishname"
                 :show-overflow-tooltip="true"
                 :label="$t('unit.EnglishName')"
-                width="200"
+                width="300"
               ></el-table-column>
               <!-- 创建时间 -->
-              <el-table-column prop="OrgId" :label="$t('unit.CreateTime')" width="180"></el-table-column>
+              <el-table-column :label="$t('unit.CreateTime')" align="center" width="250">
+                <template slot-scope="scope">
+                  <i class="el-icon-time"></i>
+                  <span style="margin-left: 2px">{{ scope.row.createdate | dateFormat}}</span>
+                </template>
+              </el-table-column>
               <el-table-column fixed="right" label="操作" width="250">
                 <template slot-scope="scope">
                   <el-button
-                    type="text"
-                    size="small"
-                    @click="showDetail(scope.row)"
-                  >{{$t('unit.ShowDetail')}}</el-button>
-                  <el-button
-                    type="text"
-                    size="small"
-                    @click="editUnit(scope.row)"
+                    icon="el-icon-edit"
+                    @click="editUnitInfo(scope.row.id)"
                   >{{$t('table.edit')}}</el-button>
                   <el-button
-                    type="text"
-                    size="small"
-                    @click="deleteUnit(scope.row)"
+                    icon="el-icon-delete"
+                    @click="deleteUnit(scope.row.id)"
                   >{{$t('table.delete')}}</el-button>
                 </template>
               </el-table-column>
@@ -100,19 +102,10 @@
         </el-card>
       </el-main>
     </el-container>
-    <el-dialog :title="$t('unit.AddUnit')" :visible.sync="dialogFormVisible" width="50%">
+    <el-dialog :title="$t('unit.AddUnit')" :visible.sync="dialogFormVisible" width="30%">
       <el-form :model="form" :label-width="formLabelWidth">
-        <el-form-item :label="$t('unit.HeadOfficeCode')">
-          <el-input v-model="form.name" class="inputWidth" />
-        </el-form-item>
         <el-form-item :label="$t('unit.UnitName')">
-          <el-input v-model="form.name" class="inputWidth" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.EnglishName')">
-          <el-input v-model="form.name" class="inputWidth" />
-        </el-form-item>
-        <el-form-item :label="$t('unit.Enable')">
-          <el-switch v-model="form.delivery" />
+          <el-input v-model="form.name" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -120,45 +113,54 @@
         <el-button type="primary" @click="saveUnit">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
+    <el-dialog :title="$t('unit.EditUnit')" :visible.sync="editVisible" width="30%">
+      <el-form :model="editUnitInfomation" :label-width="formLabelWidth">
+        <el-form-item :label="$t('unit.UnitName')">
+          <el-input v-model="editUnitInfomation.name" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary" @click="saveEditUnit">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :title="$t('unit.BatchFull')" :visible.sync="selectOrgVisible" width="30%">
+      <el-form :label-width="formLabelWidth">
+        <el-form-item :label="$t('unit.OrgName')">
+          <el-select v-model="selectOrgIDArray" multiple>
+            <el-option
+              v-for="(orgInfo,index) in orgList"
+              :label="orgInfo.orgname"
+              :value="orgInfo.id"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary" @click="fullUnit">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from "@/components/Pagination/index";
+import vPinyin from "@/common/convertpinyi";
 export default {
   components: { Pagination },
   data() {
     return {
-      form: {
-        name: "",
-        OrgName: "",
-        UnitName: ""
-      },
       //搜索条件对象
       searchInfo: {
-        HeadOfficeCode: "", //总部编码
-        UnitName: "" //项目名称
+        serialnumber: "", //总部编码
+        name: "" //项目名称
       },
-      tableData: [
-        {
-          OrgId: "45564"
-        },
-        {
-          OrgId: "42345564"
-        },
-        {
-          OrgId: "432"
-        },
-        {
-          OrgId: "45543264"
-        },
-        {
-          OrgId: "45543264"
-        }
-      ],
+      tableData: [],
       dialogFormVisible: false,
       formLabelWidth: "120px",
-      total: 300,
+      total: 0,
       page: 10,
       limit: 10,
       pageSizes: [10, 20, 50, 100],
@@ -167,81 +169,127 @@ export default {
         currentPage: 1,
         pageSize: 10,
         params: {
-          barCode: "",
-          canOrder: -1,
-          canSell: -1,
-          category: -1,
-          deleted: -1,
-          drugType: 1046,
-          drugsName: "",
-          endTime: "",
-          id: -1,
-          itemCode: "",
-          manufacturer: -1,
-          providerId: -1,
-          startTime: "",
-          usingMethod: -1
+          parentid: 4355
         }
       },
-
-      loading:false
+      form: {
+        name: "",
+        englishname: "",
+        status: 0,
+        parentid: 4355,
+        deleted: 0
+      },
+      isRepeat: false,
+      editVisible: false,
+      editUnitInfomation: {
+        id: null,
+        name: "",
+        englishname: ""
+      },
+      selectOrgVisible: false,
+      orgList: [],
+      selectOrgIDArray: []
     };
+  },
+  created() {
+    var _this = this;
+    _this.loadUnitList();
   },
   methods: {
     //加载单位列表
-    loadUnitList(){
-      this.loading = true;
-      this.params.params.category = this.categoryId;
-      this.$store
-        .dispatch("unit/getPsysListBykey", this.params)
+    loadUnitList() {
+      var _this = this;
+      _this.loading = true;
+      _this.$store
+        .dispatch("unit/getUnitList", _this.params)
         .then(res => {
-          this.tableData = res.list;
-          this.total = res.total;
-          this.page = res.pageNum;
-          this.limit = res.pageSize;
-          this.loading = false;
+          _this.tableData = res.data.list;
+          _this.total = res.data.total;
+          _this.page = res.data.pageNum;
+          _this.limit = res.data.pageSize;
+          _this.loading = false;
         })
         .catch(() => {
-          this.loading = false;
+          _this.loading = false;
         });
     },
     //搜索单位
     searchUnit() {
       var _this = this;
-      console.log("点击了搜索按钮", _this.unit);
-      _this.$notify({
-        title: "成功",
-        message: "点击了搜索按钮",
-        type: "success"
-      });
-    },
-    showDetail(rowObject) {
-      var _this = this;
-      console.log("点击了查看按钮");
-      _this.$notify({
-        title: "成功",
-        message: "点击了查看按钮" + JSON.stringify(rowObject),
-        type: "success"
-      });
+      if (!_this.isNullOrEmpty(_this.searchInfo.serialnumber)) {
+        _this.params.params.serialnumber = _this.searchInfo.serialnumber;
+      } else if (
+        _this.isNullOrEmpty(_this.searchInfo.serialnumber) ||
+        (_this.params.params.hasOwnProperty("serialnumber") &&
+          _this.isNullOrEmpty(_this.params.params.serialnumber))
+      ) {
+        delete _this.params.params.serialnumber;
+      }
+      if (!_this.isNullOrEmpty(_this.searchInfo.name)) {
+        _this.params.params.name = _this.searchInfo.name;
+      } else if (
+        _this.isNullOrEmpty(_this.searchInfo.name) ||
+        (_this.params.params.hasOwnProperty("name") &&
+          _this.isNullOrEmpty(_this.params.params.name))
+      ) {
+        delete _this.params.params.name;
+      }
+      _this.loadUnitList();
     },
     //编辑单位
-    editUnit(rowObject) {
+    editUnitInfo(id) {
       var _this = this;
-      console.log("点击了编辑单位");
-      _this.$notify({
-        title: "成功",
-        message: "点击了编辑单位" + JSON.stringify(rowObject),
-        type: "success"
-      });
+      _this.editUnitInfomation.id = id;
+      _this.$store
+        .dispatch("unit/getUnitInfo", _this.editUnitInfomation)
+        .then(res => {
+          if (res.code == 200 && res.data.length > 0) {
+            _this.editUnitInfomation.name = res.data[0].name;
+            _this.editUnitInfomation.englishname = res.data[0].englishname;
+            _this.editVisible = true;
+          } else {
+            _this.$message({
+              showClose: true,
+              message: "网络出错，请稍后重试",
+              type: "error"
+            });
+          }
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
     },
-    deleteUnit(rowObject) {
+    deleteUnit(id) {
       var _this = this;
-      console.log("点击了删除单位");
-      _this.$notify({
-        title: "成功",
-        message: "点击了删除单位" + JSON.stringify(rowObject),
-        type: "success"
-      });
+      console.log("点击了删除单位", id);
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      _this.$store
+        .dispatch("unit/deleteUnitInfo", { id: id })
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              type: "success",
+              message: "删除成功"
+            });
+            _this.loadUnitList();
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.loading = false;
+        });
     },
     //展示弹出层
     showDialog() {
@@ -252,21 +300,157 @@ export default {
     hideDialog() {
       var _this = this;
       _this.dialogFormVisible = false;
+      _this.editVisible = false;
+      _this.selectOrgVisible = false;
     },
     saveUnit() {
       var _this = this;
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      if (_this.isNullOrEmpty(_this.form.name)) {
+        _this.$message({
+          showClose: true,
+          message: "请填写项目名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+      _this.form.englishname = vPinyin.chineseToPinYin(_this.form.name);
       _this.dialogFormVisible = false;
-      _this.$notify({
-        title: "成功",
-        message: "点击了弹出层的确定按钮",
-        type: "success"
-      });
+      _this.$store
+        .dispatch("unit/insertUnitInfo", _this.form)
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              type: "success",
+              message: "添加成功"
+            });
+            _this.form.name = "";
+            _this.form.englishname = "";
+            _this.loadUnitList();
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.loading = false;
+        });
+    },
+    saveEditUnit() {
+      var _this = this;
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      if (_this.isNullOrEmpty(_this.editUnitInfomation.name)) {
+        _this.$message({
+          showClose: true,
+          message: "请填写项目名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+      console.log("处理前的数据为", _this.editUnitInfomation);
+      _this.editUnitInfomation.englishname = vPinyin.chineseToPinYin(
+        _this.editUnitInfomation.name
+      );
+      console.log("处理后的数据为", _this.editUnitInfomation);
+      _this.$store
+        .dispatch("unit/updateUnitInfo", _this.editUnitInfomation)
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              type: "success",
+              message: "编辑成功"
+            });
+            _this.editVisible = false;
+            _this.loadUnitList();
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.loading = false;
+        });
+    },
+    //判断内容是否为空
+    isNullOrEmpty(content) {
+      return content == null || content == undefined || content == "";
     },
     /**
      * 分页点击事件
      */
     pagination(param) {
-      console.log(param);
+      var _this = this;
+      _this.params.currentPage = param.page;
+      _this.params.pageSize = param.limit;
+      _this.loadUnitList();
+    },
+    /**
+     * 格式化时间
+     */
+    dateFormat: function(row, column) {
+      var _this = this;
+      if (_this.isNullOrEmpty(row.insertdate)) return "";
+      //row 表示一行数据, updateTime 表示要格式化的字段名称
+      return dateFormat(row.insertdate);
+    },
+    batchDeleteUnit() {
+      var _this = this;
+      console.log(_this.$refs.unitTable.selection);
+    },
+    loadOrgList() {
+      var _this = this;
+      _this.$store
+        .dispatch("org/selectBranIdByOrgId")
+        .then(res => {
+          _this.orgList = res;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    batchFull() {
+      var _this = this;
+      _this.loadOrgList();
+      _this.selectOrgVisible = true;
+    },
+    fullUnit() {
+      var _this = this;
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      if (_this.selectOrgIDArray.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请选择机构名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+      console.log("此处调用下发接口");
     }
   }
 };
@@ -283,6 +467,9 @@ export default {
     margin-bottom: 5px;
     margin-right: 2px;
     margin-left: 2px;
+  }
+  .el-select {
+    width: 100%;
   }
 }
 </style>

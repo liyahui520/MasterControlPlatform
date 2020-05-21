@@ -7,7 +7,9 @@ const state = {
   name: '',
   avatar: '',
   introduction: '',
-  roles: []
+  roles: [],
+  orgid:-1,
+  orgname:''
 }
 
 const mutations = {
@@ -52,7 +54,7 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { roles, name, avatar, introduction } = data
+        const { roles, name, avatar, introduction,orgid,orgname } = data
         
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {

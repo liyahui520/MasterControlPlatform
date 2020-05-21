@@ -250,7 +250,9 @@ export default {
     HeadOfficeCode: '总部编码',
     CreateTime: '创建时间',
     AddUnit: '新增单位',
-    ShowDetail: '查看'
+    ShowDetail: '查看',
+    EditUnit:'编辑单位',
+    BatchFull:'下发机构选择'
   },
   cataLog: {
     OrgName: '机构名称',
@@ -270,5 +272,35 @@ export default {
     AddOrg:'新增机构',
     Placeholder:'请选择机构',
     EditOrg:'编辑机构'
+  },
+  product:{
+    ProductName:'生产商名称',
+    ProductNumber:'生产商编号',
+    PersonInCharge:'负责人',
+    Contacts:'联系人',
+    ContactPhone:'联系电话',
+    ContactsOne:'联系人1',
+    ContactsPhoneOne:'联系人电话1',
+    FaxNumber:'传真号码',
+    ContactAddress:'联系地址',
+    PostalCode:'邮政编码',
+    EnterpriseLegalPerson:'企业法人',
+    BusinessLicenseNo:'营业执照号',
+    BusinessScope:'经营范围'
+  },
+  supplier:{
+    EnterpriseName:'企业名称',
+    EnterpriseNumber:'企业编号',
+    PersonInCharge:'负责人',
+    Contacts:'联系人',
+    ContactPhone:'联系电话',
+    ContactsOne:'联系人1',
+    ContactsPhoneOne:'联系人电话1',
+    FaxNumber:'传真号码',
+    ContactAddress:'联系地址',
+    PostalCode:'邮政编码',
+    EnterpriseLegalPerson:'企业法人',
+    BusinessLicenseNo:'营业执照号',
+    BusinessScope:'经营范围'
   }
 }

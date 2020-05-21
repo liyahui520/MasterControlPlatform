@@ -66,7 +66,6 @@
                     icon="el-icon-download"
                     type="primary"
                     plain
-                    @click="editUnit(scope.row.id)"
                   >{{$t('table.batchClean')}}</el-button>
                 </template>
               </el-table-column>
@@ -181,21 +180,6 @@ export default {
         currentPage: 1,
         pageSize: 10,
         params: {
-          orgid: 7990,
-          barCode: "",
-          canOrder: -1,
-          canSell: -1,
-          category: -1,
-          deleted: -1,
-          drugType: 1046,
-          drugsName: "",
-          endTime: "",
-          id: -1,
-          itemCode: "",
-          manufacturer: -1,
-          providerId: -1,
-          startTime: "",
-          usingMethod: -1
         }
       },
       isRepeat: false,
@@ -441,11 +425,11 @@ export default {
     display: flex;
     flex-wrap: wrap;
   }
-  .buRight {
-    float: right;
-    margin-bottom: 5px;
-    margin-right: 2px;
-    margin-left: 2px;
+  .el-row{
+    display: flex;
+    flex-direction:row-reverse;
+    padding-right: 2px;
+    padding-bottom: 5px;
   }
 }
 </style>
