@@ -82,6 +82,7 @@
                   >{{$t('table.edit')}}</el-button>
                   <el-button
                     icon="el-icon-delete"
+                    type="danger"
                     @click="deleteUnit(scope.row.id)"
                   >{{$t('table.delete')}}</el-button>
                 </template>
@@ -169,7 +170,9 @@ export default {
         currentPage: 1,
         pageSize: 10,
         params: {
-          parentid: 4355
+          parentid: 4355,
+          status: 0,
+          deleted: 0
         }
       },
       form: {
@@ -261,13 +264,24 @@ export default {
     },
     deleteUnit(id) {
       var _this = this;
-      console.log("点击了删除单位", id);
-      if (_this.isRepeat) {
-        return;
-      }
-      _this.isRepeat = true;
+      this.$confirm("确认要删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        if (_this.isRepeat) {
+          return;
+        }
+        _this.isRepeat = true;
+        var ids = [];
+        ids.push(id);
+        _this.deleteUnitInfo(ids);
+      });
+    },
+    deleteUnitInfo(ids) {
+      var _this = this;
       _this.$store
-        .dispatch("unit/deleteUnitInfo", { id: id })
+        .dispatch("commondelete/deleteInfo", { ids: ids, tableType: 0 })
         .then(res => {
           if (res.code == 200) {
             _this.$message({
@@ -417,7 +431,24 @@ export default {
     },
     batchDeleteUnit() {
       var _this = this;
-      console.log(_this.$refs.unitTable.selection);
+      var ids = _this.$refs.unitTable.selection.map(function(info) {
+        return info.id;
+      });
+      if (ids.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请至少选择一行单位",
+          type: "error"
+        });
+        return;
+      }
+      this.$confirm("确认要删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        _this.deleteUnitInfo(ids);
+      });
     },
     loadOrgList() {
       var _this = this;

@@ -69,7 +69,7 @@ export default {
     Unit: '单位',
     Catalog: '目录',
     Businesstype:'管控管理',
-    Product: '制造商',
+    Product: '生产商',
     Supplier:'供应商',
     Base: '基础数据'
   },
@@ -286,7 +286,8 @@ export default {
     PostalCode:'邮政编码',
     EnterpriseLegalPerson:'企业法人',
     BusinessLicenseNo:'营业执照号',
-    BusinessScope:'经营范围'
+    BusinessScope:'经营范围',
+
   },
   supplier:{
     EnterpriseName:'企业名称',
@@ -301,6 +302,9 @@ export default {
     PostalCode:'邮政编码',
     EnterpriseLegalPerson:'企业法人',
     BusinessLicenseNo:'营业执照号',
-    BusinessScope:'经营范围'
+    BusinessScope:'经营范围',
+    AddSupplier:'新增供应商',
+    SupplierDetail:'供应商详情',
+    EditSupplier:'编辑供应商'
   }
 }
