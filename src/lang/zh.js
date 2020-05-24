@@ -306,5 +306,10 @@ export default {
     AddSupplier:'新增供应商',
     SupplierDetail:'供应商详情',
     EditSupplier:'编辑供应商'
+  },
+  drugTree:{
+    Catalog: '目录',
+    AddCatalog:'新增目录',
+    InsertCatalog:'添加'
   }
 }

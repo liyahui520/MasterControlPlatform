@@ -18,6 +18,9 @@
               <el-form-item>
                 <el-button type="primary" @click.native="GetTableData">{{$t('query')}}</el-button>
               </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="showCatalogTree">{{$t('drugTree.AddCatalog')}}</el-button>
+              </el-form-item>
             </el-form>
           </el-header>
           <!-- table区域 -->
@@ -234,6 +237,35 @@
         </el-card>
       </el-main>
     </el-container>
+    <el-dialog
+      :title="$t('drugTree.Catalog')"
+      :visible.sync="showTreeVisible"
+      width="50%"
+      height="200px"
+    >
+      <div class="custom-tree-container">
+        <div class="block">
+          <el-tree
+            :data="catalogList"
+            show-checkbox
+            node-key="id"
+            default-expand-all
+            :expand-on-click-node="false"
+          >
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <span>
+                <el-button type="text" size="mini" @click="() => append(data)">添加</el-button>
+                <el-button type="text" size="mini" @click="() => remove(node, data)">删除</el-button>
+              </span>
+            </span>
+          </el-tree>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('tagsView.close')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -245,6 +277,56 @@ export default {
   name: "",
   components: { Tree, Pagination },
   data() {
+    const treeDataList=[
+        {
+          id: 1,
+          label: "一级 1",
+          children: [
+            {
+              id: 4,
+              label: "二级 1-1",
+              children: [
+                {
+                  id: 9,
+                  label: "三级 1-1-1"
+                },
+                {
+                  id: 10,
+                  label: "三级 1-1-2"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: "一级 2",
+          children: [
+            {
+              id: 5,
+              label: "二级 2-1"
+            },
+            {
+              id: 6,
+              label: "二级 2-2"
+            }
+          ]
+        },
+        {
+          id: 3,
+          label: "一级 3",
+          children: [
+            {
+              id: 7,
+              label: "二级 3-1"
+            },
+            {
+              id: 8,
+              label: "二级 3-2"
+            }
+          ]
+        }
+      ];
     return {
       data: [],
       defaultProps: {
@@ -281,7 +363,9 @@ export default {
         }
       },
       tableData: [],
-      categoryId: -1
+      categoryId: -1,
+      showTreeVisible: false,
+      catalogList: JSON.parse(JSON.stringify(treeDataList))
     };
   },
   created() {
@@ -349,15 +433,78 @@ export default {
     dateFormat: function(row, column) {
       //row 表示一行数据, updateTime 表示要格式化的字段名称
       return dateFormat(row.insertdate);
+    },
+
+    showCatalogTree() {
+      var _this = this;
+      _this.showTreeVisible = true;
+    },
+
+    //隐藏弹出层
+    hideDialog() {
+      var _this = this;
+      _this.showTreeVisible = false;
+    },
+    append(data) {
+      const newChild = { id: data.id++, label: "testtest", children: [] };
+      if (!data.children) {
+        this.$set(data, "children", []);
+      }
+      data.children.push(newChild);
+    },
+
+    remove(node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex(d => d.id === data.id);
+      children.splice(index, 1);
+    },
+
+    renderContent(h, { node, data, store }) {
+      return (
+        <span class="custom-tree-node">
+          <span>{node.label}</span>
+          <span>
+            <el-button
+              size="mini"
+              type="text"
+              on-click={() => this.append(data)}
+            >
+              添加
+            </el-button>
+            <el-button
+              size="mini"
+              type="text"
+              on-click={() => this.remove(node, data)}
+            >
+              删除
+            </el-button>
+          </span>
+        </span>
+      );
     }
   }
 };
 </script> 
-<style>
-.buRight {
-  float: right;
-  margin-bottom: 5px;
-  margin-right: 2px;
-  margin-left: 2px;
+<style lang="scss" scope>
+.app-container {
+  .buRight {
+    float: right;
+    margin-bottom: 5px;
+    margin-right: 2px;
+    margin-left: 2px;
+  }
+  .custom-tree-node {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
+  .treeForm {
+    display: flex;
+    justify-content: flex-end;
+  }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-form label-width="120px" class="formItem">
       <el-form-item :label="$t('supplier.EnterpriseName')">
-        <el-input v-model="enterpriseName" />
+        <el-input v-model="companyname" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="searchSupplier">{{$t('table.search')}}</el-button>
@@ -263,7 +263,7 @@ export default {
       searchInfo: {
         unitname: "" //项目名称
       },
-      enterpriseName: "",
+      companyname: "",
       tableData: [],
       dialogFormVisible: false,
       supplierDetailVisible: false,
@@ -310,14 +310,14 @@ export default {
     loadSupplierList() {
       var _this = this;
       _this.loading = true;
-      if (!_this.isNullOrEmpty(_this.enterpriseName)) {
-        _this.params.params.enterpriseName = _this.enterpriseName;
+      if (!_this.isNullOrEmpty(_this.companyname)) {
+        _this.params.params.companyname = _this.companyname;
       } else if (
-        _this.isNullOrEmpty(_this.enterpriseName) ||
-        (_this.params.params.hasOwnProperty("enterpriseName") &&
-          _this.isNullOrEmpty(_this.params.params.enterpriseName))
+        _this.isNullOrEmpty(_this.companyname) ||
+        (_this.params.params.hasOwnProperty("companyname") &&
+          _this.isNullOrEmpty(_this.params.params.companyname))
       ) {
-        delete _this.params.params.enterpriseName;
+        delete _this.params.params.companyname;
       }
       console.log("请求的参数为", _this.params);
       _this.$store
@@ -336,15 +336,6 @@ export default {
     searchSupplier() {
       var _this = this;
       _this.loadSupplierList();
-    },
-    showDetail(rowObject) {
-      var _this = this;
-      console.log("点击了查看按钮");
-      _this.$notify({
-        title: "成功",
-        message: "点击了查看按钮" + JSON.stringify(rowObject),
-        type: "success"
-      });
     },
     deleteSupplier(id) {
       var _this = this;
@@ -421,10 +412,11 @@ export default {
     },
     showDetail(id) {
       var _this = this;
+      console
       _this.$store
         .dispatch("product/getProductInfo", { id: id })
         .then(res => {
-          console.log("返回的数据为", res);
+          console.log("返回的数据为TCC", res);
           if (res.code == 200 && res.data.length > 0) {
             _this.supplierInfo = res.data[0];
             _this.supplierDetailVisible = true;
@@ -601,7 +593,7 @@ export default {
       }
       console.log("需要提交的表单内容为", _this.editSupplierInfo);
       _this.$store
-        .dispatch("supplier/updateSupplierInfo", _this.editSupplierInfo)
+        .dispatch("product/updateProductInfo", _this.editSupplierInfo)
         .then(res => {
           console.log("编辑以后返回的数据为", res);
           if (res.code == 200) {
