@@ -11,9 +11,11 @@ import request from '@/utils/request'
  */
 export function getPsysListBykey(data) {
   return request({
-    url: '/PsysList/getPsysListBykey',
+    url: '/PSysList/getPsysListBykey',
     method: 'post',
     data
   })
 }
+
+
 

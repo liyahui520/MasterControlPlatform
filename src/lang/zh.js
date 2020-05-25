@@ -219,7 +219,7 @@ export default {
     ShowAll: '有批次',
     ItemCode: '产品编码',
     Brand: '生产商',
-    AllowSaleForNoneStock: '是否允许零库存销售',
+    AllowSaleForNoneStock: '允许零库存销售',
     DosingWay: '投药方式',
     CategoryName: '所属目录',
     CostPrice: '入库参考价',
@@ -231,7 +231,13 @@ export default {
     DrugsNameDesc: '产品名称，通用名，英文名，拼音',
     PEdit: '批量修改',
     PDelete: '批量删除',
-    Lower: '批量下发'
+    Lower: '批量下发',
+    EditDrug:'编辑药品',
+    AddDrug:'新增药品',
+    SpecificInMath:'产品规格换算',
+    Remark:'备注',
+    Unit:'投药单位',
+    
   },
   common: {
     yes: '是',

@@ -35,3 +35,29 @@ export function getPmedicinesByDrugType(data) {
   })
 }
 
+//获取药品详细信息
+export function getPmedicinesInfo(data) {
+  return request({
+    url: '/Pmedicineds/getInfo',
+    method: 'post',
+    data
+  })
+}
+//获取使用方式
+export function getUsageMethods(data) {
+  return request({
+    url: '/SysCategory/getList',
+    method: 'post',
+    data
+  })
+}
+
+
+//获取投药方式
+export function getMedicateMethods(data) {
+  return request({
+    url: '/SysCategory/getList',
+    method: 'post',
+    data
+  })
+}

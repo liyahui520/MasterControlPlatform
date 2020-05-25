@@ -60,11 +60,13 @@
                 <template slot-scope="scope">
                   <el-button
                     icon="el-icon-edit"
+                    size="mini"
                     @click="editUnit(scope.row.id)"
                   >{{$t('table.edit')}}</el-button>
                   <el-button
                     icon="el-icon-download"
                     type="primary"
+                    size="mini"
                     plain
                   >{{$t('table.batchClean')}}</el-button>
                 </template>

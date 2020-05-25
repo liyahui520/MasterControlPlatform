@@ -78,11 +78,13 @@
                 <template slot-scope="scope">
                   <el-button
                     icon="el-icon-edit"
+                    size="mini"
                     @click="editUnitInfo(scope.row.id)"
                   >{{$t('table.edit')}}</el-button>
                   <el-button
                     icon="el-icon-delete"
                     type="danger"
+                    size="mini"
                     @click="deleteUnit(scope.row.id)"
                   >{{$t('table.delete')}}</el-button>
                 </template>

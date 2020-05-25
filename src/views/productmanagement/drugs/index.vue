@@ -28,11 +28,6 @@
             <el-row>
               <el-button
                 class="buRight"
-                type="info"
-                icon="el-icon-edit"
-              >{{ $t('pmedicines.PEdit') }}</el-button>
-              <el-button
-                class="buRight"
                 type="danger"
                 icon="el-icon-delete"
               >{{ $t('pmedicines.PDelete') }}</el-button>
@@ -41,6 +36,12 @@
                 type="primary"
                 icon="el-icon-download"
               >{{ $t('pmedicines.Lower') }}</el-button>
+              <el-button
+                type="success"
+                class="buRight"
+                icon="el-icon-plus"
+                @click="showAddDrug"
+              >{{$t('table.add')}}</el-button>
             </el-row>
             <el-table
               :data="tableData"
@@ -215,10 +216,15 @@
                   <span style="margin-left: 2px">{{ scope.row.insertdate | dateFormat}}</span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="操作" width="100">
+              <el-table-column fixed="right" label="操作" width="300">
                 <template slot-scope="scope">
-                  <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                  <el-button type="text" size="small">编辑</el-button>
+                  <el-button @click="handleClick(scope.row)" size="mini" icon="el-icon-search">查看</el-button>
+                  <el-button
+                    @click="showEditContent(scope.row.id)"
+                    size="mini"
+                    icon="el-icon-edit"
+                  >编辑</el-button>
+                  <el-button icon="el-icon-delete" type="danger" size="mini">{{$t('table.delete')}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -243,14 +249,13 @@
       width="50%"
       height="200px"
     >
-      <div class="custom-tree-container">
+      <div class="custom-tree-container newTree">
         <div class="block">
           <el-tree
             :data="catalogList"
-            show-checkbox
             node-key="id"
             default-expand-all
-            :expand-on-click-node="false"
+            :expand-on-click-node="true"
           >
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ node.label }}</span>
@@ -266,6 +271,362 @@
         <el-button @click="hideDialog">{{$t('tagsView.close')}}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :title="$t('pmedicines.EditDrug')" :visible.sync="editDrugVisible" width="50%">
+      <el-form :model="editDrugInfo" :label-width="formLabelWidth" :inline="true">
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.ItemCode')">
+              <div>{{editDrugInfo.itemcode}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item
+              :label="$t('pmedicines.DrugsName')"
+              :rules="[{ required: true, message: '请输入产品名称' }]"
+            >
+              <el-input v-model="editDrugInfo.drugsname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item
+              :label="$t('pmedicines.BarCode')"
+              :rules="[{ required: true, message: '请输入条形码' }]"
+            >
+              <el-input v-model="editDrugInfo.barcode" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item
+              :label="$t('pmedicines.CommonName')"
+              :rules="[{ required: true, message: '请输入通用名' }]"
+            >
+              <el-input v-model="editDrugInfo.commonname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.EnglishName')">
+              <el-input v-model="editDrugInfo.englishname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.CategoryName')">
+              <el-input v-model="editDrugInfo.categoryname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.InstorePrice')">
+              <el-input type="number" v-model="editDrugInfo.instoreprice" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.MemberPrice')">
+              <el-input type="number" v-model="editDrugInfo.memberprice" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.OutstorePrice')">
+              <el-input type="number" v-model="editDrugInfo.outstoreprice" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.Count')">
+              <el-input disabled v-model="editDrugInfo.count" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.Ingredient')">
+              <el-input v-model="editDrugInfo.ingredient" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.UnitName')">
+              <el-select v-model="editDrugInfo.unit" filterable>
+                <el-option
+                  v-for="(unitInfo,index) in unitList"
+                  :label="unitInfo.name"
+                  :value="unitInfo.id"
+                  :key="index"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.InstoreUnitName')">
+              <el-select v-model="editDrugInfo.instoreunit" filterable>
+                <el-option
+                  v-for="(unitInfo,index) in unitList"
+                  :label="unitInfo.name"
+                  :value="unitInfo.id"
+                  :key="index"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.OutstoreUnitName')">
+              <el-select v-model="editDrugInfo.outstoreunit" filterable>
+                <el-option
+                  v-for="(unitInfo,index) in unitList"
+                  :label="unitInfo.name"
+                  :value="unitInfo.id"
+                  :key="index"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.DoNotDiscount')">
+              <el-switch v-model="editDrugInfo.donotdiscount"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.CanOrder')">
+              <el-switch v-model="editDrugInfo.canorder"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.CanSell')">
+              <el-switch v-model="editDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+            <el-form-item :label="$t('pmedicines.Deleted')">
+              <el-switch v-model="editDrugInfo.deleted"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog :title="$t('pmedicines.AddDrug')" :visible.sync="insertDrugVisible" width="60%">
+      <el-form :model="insertDrugInfo" :label-width="formLabelWidth" :inline="true">
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CategoryName')">
+              <div>{{categoryName}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item
+              :label="$t('pmedicines.DrugsName')"
+              :rules="[{ required: true, message: '请输入产品名称' }]"
+            >
+              <el-input v-model="insertDrugInfo.drugsname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item
+              :label="$t('pmedicines.BarCode')"
+              :rules="[{ required: true, message: '请输入条形码' }]"
+            >
+              <el-input v-model="insertDrugInfo.barcode" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item
+              :label="$t('pmedicines.Ingredient')"
+              :rules="[{ required: true, message: '请输入成分' }]"
+            >
+              <el-input v-model="insertDrugInfo.ingredient" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.DrugsNameLetter')">
+              <el-input v-model="insertDrugInfo.drugsnameLetter" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.EnglishName')">
+              <el-input v-model="insertDrugInfo.englishname" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CommonName')">
+              <el-input v-model="insertDrugInfo.commonname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.Brand')">
+              <el-input v-model="insertDrugInfo.brand" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.ProviderName')">
+              <el-input v-model="insertDrugInfo.providerName" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.DosingWay')">
+              <el-input v-model="insertDrugInfo.usingmethod" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.ShowAll')">
+              <el-switch v-model="insertDrugInfo.showall"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.UsingMethod')">
+              <el-select v-model="insertDrugInfo.instoreunit" filterable>
+                <el-option
+                  v-for="(unitInfo,index) in unitList"
+                  :label="unitInfo.name"
+                  :value="unitInfo.id"
+                  :key="index"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.OutstorePrice')" :rules="[{ required: true, message: '请输入销售价' }]">
+              <el-input type="number" v-model="insertDrugInfo.commonname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.MemberPrice')" :rules="[{ required: true, message: '请输入会员价' }]">
+              <el-input type="number" v-model="insertDrugInfo.commonname" />
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.InstorePrice')" :rules="[{ required: true, message: '请输入产品名称' }]">
+              <el-input type="number" v-model="insertDrugInfo.commonname" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CostPrice')">
+              <el-switch v-model="insertDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.DoNotDiscount')">
+              <el-switch v-model="insertDrugInfo.deleted"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.AllowSaleForNoneStock')">
+              <el-switch v-model="insertDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CanOrder')">
+              <el-switch v-model="insertDrugInfo.deleted"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CanSell')">
+              <el-switch v-model="insertDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.Deleted')">
+              <el-switch v-model="insertDrugInfo.deleted"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.InstoreUnitName')">
+              <el-switch v-model="insertDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.OutstoreUnitName')">
+              <el-switch v-model="insertDrugInfo.deleted"></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.SpecificInMath')">
+              <el-switch v-model="insertDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="8">
+            <el-form-item :label="$t('pmedicines.Specific')">
+              <el-input v-model="insertDrugInfo.barcode" />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="8">
+            <el-form-item :label="$t('pmedicines.Count')">
+              <el-switch v-model="insertDrugInfo.deleted"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :xs="8" :sm="6" :md="4" :lg="3" :xl="1"></el-col>
+          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="13">
+            <el-form-item :label="$t('pmedicines.Remark')">
+              <el-switch v-model="insertDrugInfo.cansell"></el-switch>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -277,62 +638,63 @@ export default {
   name: "",
   components: { Tree, Pagination },
   data() {
-    const treeDataList=[
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1"
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1"
-            },
-            {
-              id: 6,
-              label: "二级 2-2"
-            }
-          ]
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1"
-            },
-            {
-              id: 8,
-              label: "二级 3-2"
-            }
-          ]
-        }
-      ];
+    const treeDataList = [
+      {
+        id: 1,
+        label: "一级 1",
+        children: [
+          {
+            id: 4,
+            label: "二级 1-1",
+            children: [
+              {
+                id: 9,
+                label: "三级 1-1-1"
+              },
+              {
+                id: 10,
+                label: "三级 1-1-2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        label: "一级 2",
+        children: [
+          {
+            id: 5,
+            label: "二级 2-1"
+          },
+          {
+            id: 6,
+            label: "二级 2-2"
+          }
+        ]
+      },
+      {
+        id: 3,
+        label: "一级 3",
+        children: [
+          {
+            id: 7,
+            label: "二级 3-1"
+          },
+          {
+            id: 8,
+            label: "二级 3-2"
+          }
+        ]
+      }
+    ];
     return {
       data: [],
       defaultProps: {
         children: "children",
         label: "name"
       },
+      formLabelWidth: "120px",
       drugType: 1046,
       input: "",
       // 分页参数 Satrt
@@ -363,32 +725,280 @@ export default {
         }
       },
       tableData: [],
-      categoryId: -1,
+      categoryId: 1006,
+      categoryName: "",
       showTreeVisible: false,
-      catalogList: JSON.parse(JSON.stringify(treeDataList))
+      catalogList: JSON.parse(JSON.stringify(treeDataList)),
+      editDrugVisible: false,
+      insertDrugVisible: false,
+      editDrugInfo: {},
+      unitList: [],
+      unitParams: {
+        currentPage: 1,
+        pageSize: 10000,
+        params: {
+          parentid: 4355,
+          status: 0,
+          deleted: 0
+        }
+      },
+      insertDrugInfo: {
+        drugtype: 1046,
+        category: null,
+        barcode: "",
+        providerid: null,
+        ingredient: "",
+        isanaesthesia: null,
+        drugsname: "",
+        refer: "",
+        description: "",
+        instoreprice: null,
+        outstoreprice: null,
+        mincount: null,
+        unit: null,
+        specific: "",
+        totalcount: null,
+        notfor: null,
+        count: null,
+        usingmethod: null,
+        vaccinatetimes: null,
+        vaccinateinterval: null,
+        englishname: null,
+        drugsnameletter: "",
+        englishnameletter: null,
+        manufacturer: null,
+        instoreunit: null,
+        drugid: "",
+        discountrate: null,
+        deleted: false,
+        memberprice: null,
+        minstore: null,
+        donotdiscount: false,
+        showall: true,
+        notice: "",
+        itemcode: "",
+        brand: null,
+        kindof: null,
+        allowsalefornonestock: false,
+        validdate: null,
+        dosingway: null,
+        indication: null,
+        forr: null,
+        taboo: null,
+        dosageperkg: null,
+        adversereactions: null,
+        druginteractions: null,
+        characters: null,
+        categoryname: "",
+        deallevel: null,
+        markid: null,
+        occupycount: null,
+        fid: null,
+        sourceflag: null,
+        costprice: null,
+        savemethod: null,
+        commonname: "",
+        writer: null,
+        handedbrand: null,
+        handedproductname: null,
+        specificmath: null,
+        specificinmath: null,
+        specificoutmath: null,
+        outstoreunit: null,
+        lastinstorecount: null,
+        canorder: false,
+        cansell: false,
+        brandid: null,
+        lastupdateuserid: null,
+        istemporder: false,
+        brand2: null,
+        brand2id: null,
+        isrecommend: false,
+        newbrand: null,
+        lastinstoreprice: null,
+        paindesc: null,
+        procurementunit: null,
+        chargeunit: null,
+        anothername: null,
+        manufacturerinternalcode: null,
+        banneddrugs: true,
+        producttaxpoint: null,
+        referenceprice: null,
+        validityinstruction: null,
+        validityperiodmanagement: false,
+        packagingunitspecification: null,
+        functional: null,
+        dosage: null,
+        approvalnumber: null,
+        temppurchasing: false,
+        chargetostorage: null,
+        procurementtopackage: null,
+        associationtype: 0,
+        countryid: null,
+        isstandarddrugs: false,
+        iscontorprice: 0,
+        iscontortype: 0,
+        tag: null,
+        autocombine: null,
+        updatestamp: "",
+        imageurl: null,
+        unitname: null,
+        instoreunitname: null,
+        outstoreunitname: null,
+        dosingwayname: null
+      },
+      productList: [],
+      supplierList: [],
+      supplierParams: {
+        currentPage: 1,
+        pageSize: 10000,
+        params: {
+          isdeleted: 0
+        }
+      },
+      usageMethodsList: [],
+      medicateMethodsList: []
     };
   },
   created() {
+    var _this = this;
     /**
      * 初始化目录
      */
-    this.GetTreeData();
+    _this.GetTreeData();
     /**
      * 初始化产品数据
      */
-    this.GetTableData();
+    _this.GetTableData();
+    //加载单位下拉
+    _this.loadUnitList();
+    //加载供应商下拉
+    _this.loadSupplierList();
+    //加载生产商下拉
+    _this.loadProductList();
+    //加载投药方式
+    _this.loadMedicateMethods();
+    //加载使用方式
+    _this.loadUsageMethods();
   },
   methods: {
+    //加载投药方式
+    loadMedicateMethods() {
+      var _this = this;
+      _this.$store
+        .dispatch("pmedicines/getMedicateMethods", { parentid: 2335 })
+        .then(res => {
+          _this.medicateMethodsList = res.data.list;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    //加载使用方式
+    loadUsageMethods() {
+      var _this = this;
+      _this.$store
+        .dispatch("pmedicines/getUsageMethods", { parentid: 2287 })
+        .then(res => {
+          _this.usageMethodsList = res.data.list;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    //加载供应商数据
+    loadSupplierList() {
+      var _this = this;
+      _this.$store
+        .dispatch("supplier/getSupplierList", _this.supplierParams)
+        .then(res => {
+          _this.supplierList = res.data.list;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    //加载生产商数据
+    loadProductList() {
+      var _this = this;
+      _this.$store
+        .dispatch("product/getProductList", _this.supplierParams)
+        .then(res => {
+          _this.productList = res.data.list;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    showAddDrug() {
+      var _this = this;
+      _this.insertDrugVisible = true;
+    },
+    //加载单位列表
+    loadUnitList() {
+      var _this = this;
+      _this.loading = true;
+      _this.$store
+        .dispatch("unit/getUnitList", _this.unitParams)
+        .then(res => {
+          _this.unitList = res.data.list;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    showEditContent(id) {
+      var _this = this;
+      console.log("需要编辑的id为", id);
+
+      _this.$store
+        .dispatch("pmedicines/getPmedicinesInfo", { id: id })
+        .then(res => {
+          if (res.code == 200 && res.data.length > 0) {
+            _this.editDrugInfo = res.data[0];
+            _this.editDrugInfo.canorder = res.data[0].canorder == 0;
+            _this.editDrugInfo.cansell = res.data[0].cansell == 0;
+            _this.editDrugInfo.deleted = res.data[0].deleted == 0;
+            _this.editDrugVisible = true;
+            console.log("获取到药品的详细数据为", _this.editDrugInfo);
+          } else {
+            _this.$message({
+              showClose: true,
+              message: "网络出错，请稍后重试",
+              type: "error"
+            });
+          }
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
     /**
      * 获取目录信息
      */
     GetTreeData: function() {
-      this.$store
+      var _this = this;
+      _this.$store
         .dispatch("psyslist/getPsysListBykey", {
-          drugType: this.drugType
+          drugType: _this.drugType
         })
         .then(res => {
-          this.data = res;
+          console.log("请求的结果为", res);
+
+          _this.data = res;
+          if (_this.data.length > 0) {
+            _this.data.forEach(function(info) {
+              console.log("每个目录的id为", info);
+              if (info.id == _this.categoryId) {
+                _this.categoryName = info.name;
+                return;
+              }
+            });
+          }
         });
     },
     /**
@@ -398,6 +1008,7 @@ export default {
     handleClick: function(nodeData) {
       console.log(nodeData);
       this.categoryId = nodeData.id;
+      this.categoryName = nodeData.name;
       this.GetTableData();
     },
     /**
@@ -444,6 +1055,8 @@ export default {
     hideDialog() {
       var _this = this;
       _this.showTreeVisible = false;
+      _this.editDrugVisible = false;
+      _this.insertDrugVisible = false;
     },
     append(data) {
       const newChild = { id: data.id++, label: "testtest", children: [] };
@@ -494,17 +1107,15 @@ export default {
     margin-right: 2px;
     margin-left: 2px;
   }
-  .custom-tree-node {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-right: 8px;
-  }
-  .treeForm {
-    display: flex;
-    justify-content: flex-end;
+  .newTree {
+    .custom-tree-node {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      padding-right: 8px;
+    }
   }
 }
 </style>
