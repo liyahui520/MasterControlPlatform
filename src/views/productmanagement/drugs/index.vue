@@ -60,7 +60,7 @@
               ></el-table-column>
               <!-- 产品名称 -->
               <el-table-column
-                prop="drugsname"
+                prop="drugsName"
                 fixed="left"
                 :show-overflow-tooltip="true"
                 :label="$t('pmedicines.DrugsName')"

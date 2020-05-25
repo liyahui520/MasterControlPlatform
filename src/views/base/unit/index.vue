@@ -125,7 +125,7 @@
         <el-button type="primary" @click="saveEditUnit">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
-    <el-dialog :title="$t('unit.BatchFull')" :visible.sync="selectOrgVisible" width="30%">
+    <el-dialog :title="$t('unit.BatchFull')" :visible.sync="selectOrgVisible" width="30%" v-loading="vloading">
       <el-form :label-width="formLabelWidth">
         <el-form-item :label="$t('unit.OrgName')">
           <el-select v-model="selectOrgIDArray" multiple>
@@ -149,6 +149,7 @@
 <script>
 import Pagination from "@/components/Pagination/index";
 import vPinyin from "@/common/convertpinyi";
+
 export default {
   components: { Pagination },
   data() {
@@ -166,6 +167,7 @@ export default {
       limit: 10,
       pageSizes: [10, 20, 50, 100],
       loading: false,
+      vloading: false,
       params: {
         currentPage: 1,
         pageSize: 10,
@@ -481,7 +483,31 @@ export default {
         _this.isRepeat = false;
         return;
       }
-      console.log("此处调用下发接口");
+      var _this = this;
+      _this.vloading = true;
+      _this.$store
+        .dispatch("hq/psyslistHq", {status:0,orgIds:_this.selectOrgIDArray})
+        .then(res => { 
+          if(res.data.code!=200){
+             _this.$message({
+                showClose: true,
+                message: res.data.message,
+                type: "error"
+              });
+          }else{
+               _this.$message({
+                showClose: true,
+                message: "执行成功",
+                type: "success"
+              });
+          }
+          _this.isRepeat = false;
+          _this.vloading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.vloading = false;
+        });
     }
   }
 };
