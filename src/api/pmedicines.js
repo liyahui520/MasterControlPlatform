@@ -70,3 +70,12 @@ export function insertDrugsAPI(data) {
     data
   })
 }
+
+//编辑药品信息
+export function updateDrugsAPI(data) {
+  return request({
+    url: '/Pmedicineds/updateInfo',
+    method: 'post',
+    data
+  })
+}

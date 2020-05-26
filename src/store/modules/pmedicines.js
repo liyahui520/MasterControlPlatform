@@ -1,4 +1,4 @@
-import { getPmedicinesByDrugType,getPmedicinesInfo,getUsageMethods,getMedicateMethods,insertDrugsAPI } from '@/api/pmedicines' 
+import { getPmedicinesByDrugType,getPmedicinesInfo,getUsageMethods,getMedicateMethods,insertDrugsAPI,updateDrugsAPI } from '@/api/pmedicines' 
 import {getListData} from '@/utils/index'
 
 const state = { 
@@ -51,6 +51,16 @@ const actions = {
   insertDrugsAPI({ commit  },params) {
     return new Promise((resolve, reject) => { 
       insertDrugsAPI(params).then(response => {  
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  //编辑药品数据
+  updateDrugsAPI({ commit  },params) {
+    return new Promise((resolve, reject) => { 
+      updateDrugsAPI(params).then(response => {  
         resolve(response)
       }).catch(error => {
         reject(error)

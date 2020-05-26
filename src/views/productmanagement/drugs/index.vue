@@ -30,6 +30,7 @@
                 class="buRight"
                 type="danger"
                 icon="el-icon-delete"
+                @click="batchDeleteDrugsInfo"
               >{{ $t('pmedicines.PDelete') }}</el-button>
               <el-button
                 class="buRight"
@@ -50,6 +51,7 @@
               stripe
               align="center"
               style="width: 99.9%;height:100%;overflow:hidden;"
+              ref="drugsTable"
             >
               <el-table-column type="selection" align="center" width="55"></el-table-column>
               <!-- 产品编码 -->
@@ -61,7 +63,7 @@
               ></el-table-column>
               <!-- 产品名称 -->
               <el-table-column
-                prop="drugsname"
+                prop="drugsName"
                 fixed="left"
                 :show-overflow-tooltip="true"
                 :label="$t('pmedicines.DrugsName')"
@@ -216,15 +218,19 @@
                   <span style="margin-left: 2px">{{ scope.row.insertdate | dateFormat}}</span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" label="操作" width="300">
+              <el-table-column fixed="right" :label="$t('table.actions')" width="300">
                 <template slot-scope="scope">
-                  <el-button @click="showDrugsDetail(scope.row.id)" size="mini" icon="el-icon-search">查看</el-button>
+                  <el-button
+                    @click="showDrugsDetail(scope.row.id)"
+                    size="mini"
+                    icon="el-icon-search"
+                  >{{$t('cataLog.ShowDetail')}}</el-button>
                   <el-button
                     @click="showEditContent(scope.row.id)"
                     size="mini"
                     icon="el-icon-edit"
-                  >编辑</el-button>
-                  <el-button icon="el-icon-delete" type="danger" size="mini">{{$t('table.delete')}}</el-button>
+                  >{{$t('table.edit')}}</el-button>
+                  <el-button icon="el-icon-delete" type="danger" size="mini" @click="signDeleteDrugsInfo(scope.row.id)">{{$t('table.delete')}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -279,7 +285,13 @@
       width="60%"
       v-loading="loading"
     >
-      <el-form :model="editDrugInfo" :label-width="formLabelWidth" :inline="true" ref="insertdrugsinfo" :rules="rules" >
+      <el-form
+        :model="editDrugInfo"
+        :label-width="formLabelWidth"
+        :inline="true"
+        ref="updatedrugsinfo"
+        :rules="rules"
+      >
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CategoryName')">
@@ -518,8 +530,11 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="resetForm('insertdrugsinfo')">{{$t('table.cancel')}}</el-button>
-        <el-button type="primary" @click="submitDrugInfo('insertdrugsinfo')">{{$t('table.confirm')}}</el-button>
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button
+          type="primary"
+          @click="saveEditDrugsInfo('updatedrugsinfo')"
+        >{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -530,7 +545,13 @@
       @close="resetForm('insertdrugsinfo')"
       v-loading="loading"
     >
-      <el-form :model="insertDrugInfo" :label-width="formLabelWidth" :inline="true" ref="insertdrugsinfo" :rules="rules" >
+      <el-form
+        :model="insertDrugInfo"
+        :label-width="formLabelWidth"
+        :inline="true"
+        ref="insertdrugsinfo"
+        :rules="rules"
+      >
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CategoryName')">
@@ -774,7 +795,12 @@
       </div>
     </el-dialog>
 
-    <el-dialog :title="$t('pmedicines.DrugDetail')" :visible.sync="showDrugsDetailInfo" :close-on-click-modal="false" width="60%" >
+    <el-dialog
+      :title="$t('pmedicines.DrugDetail')"
+      :visible.sync="showDrugsDetailInfo"
+      :close-on-click-modal="false"
+      width="60%"
+    >
       <el-form :model="drugsDetailInfo" :label-width="formLabelWidth" :inline="true">
         <el-row :gutter="10">
           <el-col :xl="8">
@@ -783,127 +809,95 @@
             </el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item
-              :label="$t('pmedicines.DrugsName')"
-            >
-              {{drugsDetailInfo.drugsName}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.DrugsName')">{{drugsDetailInfo.drugsName}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item
-              :label="$t('pmedicines.BarCode')"
-            >
-              {{drugsDetailInfo.barcode}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.BarCode')">{{drugsDetailInfo.barcode}}</el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.Ingredient')">{{drugsDetailInfo.ingredient}}</el-form-item>
+          </el-col>
           <el-col :xl="8">
             <el-form-item
-              :label="$t('pmedicines.Ingredient')"
-            >
-              {{drugsDetailInfo.ingredient}}
-            </el-form-item>
+              :label="$t('pmedicines.DrugsNameLetter')"
+            >{{drugsDetailInfo.drugsnameletter}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.DrugsNameLetter')">
-              {{drugsDetailInfo.drugsnameletter}}
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.EnglishName')">
-              {{drugsDetailInfo.englishname}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.EnglishName')">{{drugsDetailInfo.englishname}}</el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.CommonName')">
-              {{drugsDetailInfo.commonname}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.CommonName')">{{drugsDetailInfo.commonname}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Brand')">
-              {{drugsDetailInfo.brand}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.Brand')">{{drugsDetailInfo.brand}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.ProviderName')">
-              {{drugsDetailInfo.provider}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.ProviderName')">{{drugsDetailInfo.providername}}</el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.DosingWay')">
-              {{drugsDetailInfo.dosingwayname}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.DosingWay')">{{drugsDetailInfo.dosingwayname}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.ShowAll')">
-              {{drugsDetailInfo.showall?'是':'否'}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.ShowAll')">{{drugsDetailInfo.showall?'是':'否'}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.UsingMethod')">
-              {{drugsDetailInfo.usingmethodname}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.UsingMethod')">{{drugsDetailInfo.usingmethodname}}</el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.OutstorePrice')">
-              {{drugsDetailInfo.outstoreprice | currency('$')}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.OutstorePrice')"
+            >{{drugsDetailInfo.outstoreprice | currency('$')}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.MemberPrice')">
-              {{drugsDetailInfo.memberprice| currency('$')}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.MemberPrice')"
+            >{{drugsDetailInfo.memberprice| currency('$')}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.InstorePrice')">
-              {{drugsDetailInfo.instoreprice| currency('$')}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.CostPrice')">
-              {{drugsDetailInfo.costprice| currency('$')}}
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.DoNotDiscount')">
-              {{drugsDetailInfo.donotdiscount?'是':'否'}}
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.AllowSaleForNoneStock')">
-              {{drugsDetailInfo.allowsalefornonestock?'是':'否'}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.InstorePrice')"
+            >{{drugsDetailInfo.instoreprice| currency('$')}}</el-form-item>
           </el-col>
         </el-row>
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.CanOrder')">
-              {{drugsDetailInfo.canorder==1?'是':'否'}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.CostPrice')"
+            >{{drugsDetailInfo.costprice| currency('$')}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.CanSell')">
-              {{drugsDetailInfo.cansell==1?'是':'否'}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.DoNotDiscount')"
+            >{{drugsDetailInfo.donotdiscount?'是':'否'}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Deleted')">
-              {{drugsDetailInfo.deleted==1?'是':'否'}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.AllowSaleForNoneStock')"
+            >{{drugsDetailInfo.allowsalefornonestock?'是':'否'}}</el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row :gutter="10">
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CanOrder')">{{drugsDetailInfo.canorder==1?'是':'否'}}</el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.CanSell')">{{drugsDetailInfo.cansell==1?'是':'否'}}</el-form-item>
+          </el-col>
+          <el-col :xl="8">
+            <el-form-item :label="$t('pmedicines.Deleted')">{{drugsDetailInfo.deleted==1?'是':'否'}}</el-form-item>
           </el-col>
         </el-row>
 
@@ -911,16 +905,10 @@
           <el-col :xl="8">
             <el-form-item
               :label="$t('pmedicines.InstoreUnitName')"
-            >
-              {{drugsDetailInfo.instoreunitname}}
-            </el-form-item>
+            >{{drugsDetailInfo.instoreunitname}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item
-              :label="$t('pmedicines.Unit')"
-            >
-              {{drugsDetailInfo.unitname}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.Unit')">{{drugsDetailInfo.unitname}}</el-form-item>
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.SpecificInMath')" class="specificInMath">
@@ -935,14 +923,10 @@
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Specific')">
-              {{drugsDetailInfo.specific}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.Specific')">{{drugsDetailInfo.specific}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Count')">
-              {{drugsDetailInfo.count}}
-            </el-form-item>
+            <el-form-item :label="$t('pmedicines.Count')">{{drugsDetailInfo.count}}</el-form-item>
           </el-col>
           <el-col :xl="8"></el-col>
         </el-row>
@@ -950,9 +934,10 @@
       <el-form :model="drugsDetailInfo" :label-width="formLabelWidth">
         <el-row>
           <el-col :span="24">
-            <el-form-item :label="$t('pmedicines.Remark')" class="drugsRemark">
-              {{drugsDetailInfo.description}}
-            </el-form-item>
+            <el-form-item
+              :label="$t('pmedicines.Remark')"
+              class="drugsRemark"
+            >{{drugsDetailInfo.description}}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -1058,7 +1043,7 @@ export default {
         pageSize: 10,
         params: {
           drugType: 1046,
-          drugsName: "",
+          deleted: 0
         }
       },
       tableData: [],
@@ -1079,7 +1064,7 @@ export default {
           deleted: 0
         }
       },
-      insertBaseInfo:{
+      insertBaseInfo: {
         drugtype: 1046,
         category: 1006,
         barcode: "",
@@ -1141,14 +1126,14 @@ export default {
           { validator: validateOutPricePrice, trigger: "blur" }
         ]
       },
-      showDrugsDetailInfo:false,
+      showDrugsDetailInfo: false,
       //药品详情信息
-      drugsDetailInfo:{}
+      drugsDetailInfo: {}
     };
   },
   created() {
     var _this = this;
-    _this.insertDrugInfo=_this.insertBaseInfo;
+    _this.insertDrugInfo = _this.insertBaseInfo;
     /**
      * 初始化目录
      */
@@ -1169,15 +1154,121 @@ export default {
     _this.loadUsageMethods();
   },
   methods: {
-    showDrugsDetail(id){
+    //批量删除药品信息
+    batchDeleteDrugsInfo() {
+      var _this = this;
+      var ids = _this.$refs.drugsTable.selection.map(function(info) {
+        return info.id;
+      });
+      if (ids.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请至少选择一行药品信息",
+          type: "error"
+        });
+        return;
+      }
+      _this
+        .$confirm("确认要删除吗?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          _this.deleteDrugsInfo(ids);
+        });
+    },
+    //单个删除药品信息
+    signDeleteDrugsInfo(id) {
+      var _this = this;
+      var ids = [];
+      ids.push(id.toString());
+      _this
+        .$confirm("确认要删除吗?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          _this.deleteDrugsInfo(ids);
+        });
+    },
+    //删除药品信息
+    deleteDrugsInfo(ids) {
+      var _this = this;
+      _this.$store
+        .dispatch("commondelete/deleteInfo", {
+          ids: ids,
+          tableType: 3
+        })
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              type: "success",
+              message: "删除成功"
+            });
+            _this.GetTableData();
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.loading = false;
+        });
+    },
+    saveEditDrugsInfo(formName) {
+      var _this = this;
+      console.log("编辑的结果为", formName);
+      _this.$refs[formName].validate(valid => {
+        if (valid) {
+          _this.loading = true;
+          _this.editDrugInfo.deleted = _this.editDrugInfo.deleted ? 1 : 0;
+          _this.editDrugInfo.canorder = _this.editDrugInfo.canorder ? 1 : 0;
+          _this.editDrugInfo.cansell = _this.editDrugInfo.cansell ? 1 : 0;
+          _this.$store
+            .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
+            .then(res => {
+              if (res.code == 200) {
+                _this.$message({
+                  showClose: true,
+                  type: "success",
+                  message: "保存成功"
+                });
+                _this.hideDialog();
+                _this.GetTableData();
+              } else {
+                _this.$message({
+                  showClose: true,
+                  message: res.msg,
+                  type: "error"
+                });
+              }
+              _this.loading = false;
+            })
+            .catch(() => {
+              _this.loading = false;
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    showDrugsDetail(id) {
       var _this = this;
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
         .then(res => {
           if (res.code == 200 && res.data.length > 0) {
             _this.drugsDetailInfo = res.data[0];
-            console.log("获取到的详细信息为",_this.drugsDetailInfo )
-            _this.showDrugsDetailInfo=true;
+            _this.showDrugsDetailInfo = true;
           } else {
             _this.$message({
               showClose: true,
@@ -1194,10 +1285,10 @@ export default {
       var _this = this;
       _this.$refs[formName].validate(valid => {
         if (valid) {
-          _this.loading=true;
-          _this.insertDrugInfo.deleted=_this.insertDrugInfo.deleted?1:0;
-          _this.insertDrugInfo.canorder=_this.insertDrugInfo.canorder?1:0;
-          _this.insertDrugInfo.cansell=_this.insertDrugInfo.cansell?1:0;
+          _this.loading = true;
+          _this.insertDrugInfo.deleted = _this.insertDrugInfo.deleted ? 1 : 0;
+          _this.insertDrugInfo.canorder = _this.insertDrugInfo.canorder ? 1 : 0;
+          _this.insertDrugInfo.cansell = _this.insertDrugInfo.cansell ? 1 : 0;
           _this.$store
             .dispatch("pmedicines/insertDrugsAPI", _this.insertDrugInfo)
             .then(res => {
@@ -1228,9 +1319,8 @@ export default {
     },
     resetForm(formName) {
       var _this = this;
-      _this.insertDrugInfo=_this.insertBaseInfo;
+      _this.insertDrugInfo = _this.insertBaseInfo;
       _this.$refs[formName].resetFields();
-
       _this.hideDialog();
     },
     //投药方式发生改变时
@@ -1358,15 +1448,17 @@ export default {
     showEditContent(id) {
       var _this = this;
       console.log("需要编辑的id为", id);
-
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
         .then(res => {
           if (res.code == 200 && res.data.length > 0) {
             _this.editDrugInfo = res.data[0];
-            _this.editDrugInfo.canorder = res.data[0].canorder == 0;
-            _this.editDrugInfo.cansell = res.data[0].cansell == 0;
-            _this.editDrugInfo.deleted = res.data[0].deleted == 0;
+            _this.editDrugInfo.canorder = res.data[0].canorder == 1;
+            _this.editDrugInfo.cansell = res.data[0].cansell == 1;
+            _this.editDrugInfo.deleted = res.data[0].deleted == 1;
+            console.log("编辑的供应商为", _this.editDrugInfo.providerid);
+            _this.insertUnitChange(_this.editDrugInfo.instoreunit);
+            _this.outUnitChange(_this.editDrugInfo.unit);
             _this.editDrugVisible = true;
           } else {
             _this.$message({
@@ -1422,7 +1514,7 @@ export default {
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
         .then(res => {
-          console.log("结果",res)
+          console.log("结果", res);
           this.tableData = res.list;
           this.total = res.total;
           this.page = res.pageNum;
@@ -1448,7 +1540,7 @@ export default {
       //row 表示一行数据, updateTime 表示要格式化的字段名称
       return dateFormat(row.insertdate);
     },
-
+    //展示目录树结构
     showCatalogTree() {
       var _this = this;
       _this.showTreeVisible = true;
@@ -1460,8 +1552,8 @@ export default {
       _this.showTreeVisible = false;
       _this.editDrugVisible = false;
       _this.insertDrugVisible = false;
-      _this.showDrugsDetailInfo=false;
-      _this.insertDrugInfo=_this.insertBaseInfo;
+      _this.showDrugsDetailInfo = false;
+      _this.insertDrugInfo = _this.insertBaseInfo;
     },
     append(data) {
       const newChild = { id: data.id++, label: "testtest", children: [] };
