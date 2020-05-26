@@ -1263,6 +1263,7 @@ export default {
               tableType: 0
             })
             .then(res => {
+              console.log("调用删除返回的结果为",res)
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
