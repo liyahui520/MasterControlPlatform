@@ -1,4 +1,4 @@
-import { getProductList,getProductInfo,insertProductInfo,updateProductInfo } from '@/api/product'
+import { getProductList,getProductInfo,insertProductInfo,updateProductInfo,barchFullProduct } from '@/api/product'
 
 const state = { 
 }
@@ -40,6 +40,16 @@ const actions = {
   updateProductInfo({ commit  },params) {
     return new Promise((resolve, reject) => { 
       updateProductInfo(params).then(response => {
+        // const { data } = response
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  barchFullProduct({ commit  },params) {
+    return new Promise((resolve, reject) => { 
+      barchFullProduct(params).then(response => {
         // const { data } = response
         resolve(response)
       }).catch(error => {

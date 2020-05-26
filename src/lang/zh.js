@@ -258,7 +258,9 @@ export default {
     AddUnit: '新增单位',
     ShowDetail: '查看',
     EditUnit:'编辑单位',
-    BatchFull:'下发机构选择'
+    BatchFull:'下发机构选择',
+    AddCate:'新增目录',
+    CateName:'目录名称'
   },
   cataLog: {
     OrgName: '机构名称',

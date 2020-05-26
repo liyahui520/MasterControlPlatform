@@ -3,7 +3,8 @@ import {
   getSupplierInfo,
   insertSupplierInfo,
   deleteSupplierInfo,
-  updateSupplierInfo
+  updateSupplierInfo,
+  barchFullSupplier
 } from '@/api/supplier'
 
 const state = {}
@@ -63,6 +64,17 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       updateSupplierInfo(params).then(response => {
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  barchFullSupplier({
+    commit
+  }, params) {
+    return new Promise((resolve, reject) => {
+      barchFullSupplier(params).then(response => {
         resolve(response)
       }).catch(error => {
         reject(error)

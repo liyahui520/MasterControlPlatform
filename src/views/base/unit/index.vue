@@ -23,12 +23,12 @@
                 icon="el-icon-delete"
                 @click="batchDeleteUnit"
               >{{ $t('pmedicines.PDelete') }}</el-button>
-              <el-button
+              <!-- <el-button
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
                 @click="batchFull"
-              >{{ $t('pmedicines.Lower') }}</el-button>
+              >{{ $t('pmedicines.Lower') }}</el-button> -->
               <el-button
                 type="success"
                 class="buRight"

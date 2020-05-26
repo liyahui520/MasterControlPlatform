@@ -20,11 +20,12 @@
                 icon="el-icon-delete"
                 @click="batchDelete"
               >{{ $t('pmedicines.PDelete') }}</el-button>
-              <el-button
+              <!-- <el-button
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
-              >{{ $t('pmedicines.Lower') }}</el-button>
+                @click="batchFullSupplisr"
+              >{{ $t('pmedicines.Lower') }}</el-button> -->
               <el-button
                 type="success"
                 class="buRight"
@@ -253,6 +254,25 @@
         <el-button type="primary" @click="saveEditSupplier">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog :title="$t('unit.BatchFull')" :visible.sync="selectOrgVisible" width="30%">
+      <el-form :label-width="formLabelWidth" class="selectFullOrgClass">
+        <el-form-item :label="$t('unit.OrgName')">
+          <el-select v-model="selectOrgIDArray" multiple>
+            <el-option
+              v-for="(orgInfo,index) in orgList"
+              :label="orgInfo.orgname"
+              :value="orgInfo.id"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary" @click="fullUnit">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -302,7 +322,10 @@ export default {
       },
       supplierInfo: {},
       editSupplierInfo: {},
-      deleteIds: []
+      deleteIds: [],
+      selectOrgVisible: false,
+      orgList: [],
+      selectOrgIDArray: []
     };
   },
   created() {
@@ -310,6 +333,64 @@ export default {
     _this.loadSupplierList();
   },
   methods: {
+    fullUnit() {
+      var _this = this;
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      if (_this.selectOrgIDArray.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请选择机构名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+      _this.$store
+        .dispatch("product/barchFullProduct", {
+          orgIds: _this.selectOrgIDArray
+        })
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              type: "success",
+              message: "下发成功"
+            });
+            _this.deleteIds = [];
+            _this.loadSupplierList();
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    loadOrgList() {
+      var _this = this;
+      _this.$store
+        .dispatch("org/selectBranIdByOrgId")
+        .then(res => {
+          _this.orgList = res;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    batchFullSupplisr() {
+      var _this = this;
+      _this.loadOrgList();
+      _this.selectOrgVisible = true;
+    },
     loadSupplierList() {
       var _this = this;
       _this.loading = true;
@@ -672,6 +753,11 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     -webkit-line-clamp: 2;
+  }
+  .selectFullOrgClass {
+    .el-select {
+      width: 100%;
+    }
   }
 }
 </style>

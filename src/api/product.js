@@ -31,3 +31,10 @@ export function updateProductInfo(data) {
   })
 }
 
+export function barchFullProduct(data) {
+  return request({
+    url: '/hq/manufacturerHq',
+    method: 'post',
+    data
+  })
+}

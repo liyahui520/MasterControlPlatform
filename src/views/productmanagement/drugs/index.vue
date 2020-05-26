@@ -36,6 +36,7 @@
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
+                @click="showFullDrug"
               >{{ $t('pmedicines.Lower') }}</el-button>
               <el-button
                 type="success"
@@ -230,7 +231,12 @@
                     size="mini"
                     icon="el-icon-edit"
                   >{{$t('table.edit')}}</el-button>
-                  <el-button icon="el-icon-delete" type="danger" size="mini" @click="signDeleteDrugsInfo(scope.row.id)">{{$t('table.delete')}}</el-button>
+                  <el-button
+                    icon="el-icon-delete"
+                    type="danger"
+                    size="mini"
+                    @click="signDeleteDrugsInfo(scope.row.id)"
+                  >{{$t('table.delete')}}</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -252,22 +258,29 @@
     <el-dialog
       :title="$t('drugTree.Catalog')"
       :visible.sync="showTreeVisible"
-      width="50%"
+      width="30%"
       height="200px"
+      :close-on-click-modal="false"
     >
+      <!-- <div class="fullButtonClass">
+        <el-button
+          type="primary"
+          icon="el-icon-download"
+        >{{ $t('pmedicines.Lower') }}</el-button>
+      </div> -->
       <div class="custom-tree-container newTree">
         <div class="block">
-          <el-tree
-            :data="catalogList"
-            node-key="id"
-            default-expand-all
-            :expand-on-click-node="true"
-          >
+          <el-tree :data="data" node-key="id" default-expand-all :expand-on-click-node="true">
             <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
+              <span>{{ data.name }}</span>
               <span>
-                <el-button type="text" size="mini" @click="() => append(data)">添加</el-button>
-                <el-button type="text" size="mini" @click="() => remove(node, data)">删除</el-button>
+                <el-button size="mini" icon="el-icon-plus" @click.stop="() => append(data)">添加</el-button>
+                <el-button
+                  size="mini"
+                  icon="el-icon-delete"
+                  type="danger"
+                  @click.stop="() => remove(node, data)"
+                >删除</el-button>
               </span>
             </span>
           </el-tree>
@@ -276,6 +289,23 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="hideDialog">{{$t('tagsView.close')}}</el-button>
       </div>
+      <el-dialog
+        :title="$t('unit.AddCate')"
+        :visible.sync="dialogFormVisible"
+        width="30%"
+        append-to-body
+        :close-on-click-modal="false"
+      >
+        <el-form :label-width="formLabelWidth">
+          <el-form-item :label="$t('unit.CateName')">
+            <el-input v-model="catename" />
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="hideAddCate">{{$t('table.cancel')}}</el-button>
+          <el-button type="primary" @click="saveCate">{{$t('table.confirm')}}</el-button>
+        </div>
+      </el-dialog>
     </el-dialog>
 
     <el-dialog
@@ -946,6 +976,30 @@
         <el-button @click="hideDialog">{{$t('tagsView.close')}}</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog
+      :title="$t('unit.BatchFull')"
+      :visible.sync="selectOrgVisible"
+      width="30%"
+      :close-on-click-modal="false"
+    >
+      <el-form :label-width="formLabelWidth">
+        <el-form-item :label="$t('unit.OrgName')" class="selectOrgClass">
+          <el-select v-model="selectOrgIDArray" multiple>
+            <el-option
+              v-for="(orgInfo,index) in orgList"
+              :label="orgInfo.orgname"
+              :value="orgInfo.id"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary" @click="fullUnit">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -958,56 +1012,6 @@ export default {
   name: "",
   components: { Tree, Pagination },
   data() {
-    const treeDataList = [
-      {
-        id: 1,
-        label: "一级 1",
-        children: [
-          {
-            id: 4,
-            label: "二级 1-1",
-            children: [
-              {
-                id: 9,
-                label: "三级 1-1-1"
-              },
-              {
-                id: 10,
-                label: "三级 1-1-2"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 2,
-        label: "一级 2",
-        children: [
-          {
-            id: 5,
-            label: "二级 2-1"
-          },
-          {
-            id: 6,
-            label: "二级 2-2"
-          }
-        ]
-      },
-      {
-        id: 3,
-        label: "一级 3",
-        children: [
-          {
-            id: 7,
-            label: "二级 3-1"
-          },
-          {
-            id: 8,
-            label: "二级 3-2"
-          }
-        ]
-      }
-    ];
     var validateInsertPrice = (rule, value, callback) => {
       if (parseFloat(value) <= 0) {
         callback(new Error("输入的销售价不能小于等于0"));
@@ -1023,6 +1027,7 @@ export default {
       }
     };
     return {
+      catename: "", //目录名称
       data: [],
       defaultProps: {
         children: "children",
@@ -1050,7 +1055,6 @@ export default {
       categoryId: 1006,
       categoryName: "",
       showTreeVisible: false,
-      catalogList: JSON.parse(JSON.stringify(treeDataList)),
       editDrugVisible: false,
       insertDrugVisible: false,
       editDrugInfo: {},
@@ -1128,7 +1132,22 @@ export default {
       },
       showDrugsDetailInfo: false,
       //药品详情信息
-      drugsDetailInfo: {}
+      drugsDetailInfo: {},
+      selectOrgVisible: false,
+      selectOrgIDArray: [],
+      orgList: [],
+      isRepeat: false,
+      cateParams: {
+        currentPage: 1,
+        pageSize: 100000,
+        params: {
+          parentid: 1006,
+          status: 0,
+          deleted: 0
+        }
+      },
+      dialogFormVisible: false,
+      cateParentid: null
     };
   },
   created() {
@@ -1152,8 +1171,154 @@ export default {
     _this.loadMedicateMethods();
     //加载使用方式
     _this.loadUsageMethods();
+    //加载机构列表
+    _this.loadOrgList();
   },
   methods: {
+    saveCate() {
+      var _this = this;
+      if (_this.catename == null || _this.catename == "") {
+        _this.$message({
+          showClose: true,
+          message: "请填写目录名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+      var englishname = vPinyin.chineseToPinYin(_this.catename);
+      _this.$store
+        .dispatch("unit/insertUnitInfo", {
+          name: _this.catename,
+          parentid: _this.cateParentid,
+          deleted: 0,
+          englishname: englishname,
+          status: 0
+        })
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              type: "success",
+              message: "添加成功"
+            });
+            _this.catename = "";
+            _this.dialogFormVisible = false;
+            _this.GetTreeData();
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.msg,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.loading = false;
+        });
+    },
+    //展示目录树结构
+    showCatalogTree() {
+      var _this = this;
+      _this.showTreeVisible = true;
+    },
+    append(data) {
+      console.log("节点对象数据为", data);
+      var _this = this;
+      _this.dialogFormVisible = true;
+      _this.cateParentid = data.id;
+    },
+
+    remove(node, data) {
+      var _this = this;
+      //如果有子集并且子集的数据大于0
+      if (
+        data.hasOwnProperty("children") &&
+        data.children != null &&
+        data.children != undefined &&
+        data.children.length > 0
+      ) {
+        _this.$message({
+          showClose: true,
+          message: "非子节点不可删除",
+          type: "error"
+        });
+        return;
+      }
+      var ids = [];
+      ids.push(data.id);
+      _this
+        .$confirm("确认要删除吗?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        })
+        .then(() => {
+          _this.$store
+            .dispatch("commondelete/deleteInfo", {
+              ids: ids,
+              tableType: 0
+            })
+            .then(res => {
+              if (res.code == 200) {
+                _this.$message({
+                  showClose: true,
+                  type: "success",
+                  message: "删除成功"
+                });
+                _this.GetTreeData();
+              } else {
+                _this.$message({
+                  showClose: true,
+                  message: res.msg,
+                  type: "error"
+                });
+              }
+              _this.isRepeat = false;
+              _this.loading = false;
+            })
+            .catch(() => {
+              _this.isRepeat = false;
+              _this.loading = false;
+            });
+        });
+    },
+    showFullDrug() {
+      var _this = this;
+      _this.selectOrgVisible = true;
+    },
+    //加载机构列表
+    loadOrgList() {
+      var _this = this;
+      _this.$store
+        .dispatch("org/selectBranIdByOrgId")
+        .then(res => {
+          _this.orgList = res;
+        })
+        .catch(() => {
+          _this.loading = false;
+        });
+    },
+    //批量下发
+    fullUnit() {
+      var _this = this;
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      if (_this.selectOrgIDArray.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请选择机构名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+    },
     //批量删除药品信息
     batchDeleteDrugsInfo() {
       var _this = this;
@@ -1233,6 +1398,11 @@ export default {
           _this.editDrugInfo.deleted = _this.editDrugInfo.deleted ? 1 : 0;
           _this.editDrugInfo.canorder = _this.editDrugInfo.canorder ? 1 : 0;
           _this.editDrugInfo.cansell = _this.editDrugInfo.cansell ? 1 : 0;
+          _this.deleteObjectValue("insertdate");
+          _this.deleteObjectValue("validdate");
+          _this.deleteObjectValue("updatestamp");
+          _this.deleteObjectValue("lastupdateuserId");
+          console.log("需要提交的对象为", _this.editDrugInfo);
           _this.$store
             .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
             .then(res => {
@@ -1261,6 +1431,13 @@ export default {
         }
       });
     },
+    deleteObjectValue(value) {
+      var _this = this;
+      console.log("属性值为", value);
+      if (_this.editDrugInfo.hasOwnProperty(value)) {
+        delete _this.editDrugInfo[value];
+      }
+    },
     showDrugsDetail(id) {
       var _this = this;
       _this.$store
@@ -1268,6 +1445,7 @@ export default {
         .then(res => {
           if (res.code == 200 && res.data.length > 0) {
             _this.drugsDetailInfo = res.data[0];
+
             _this.showDrugsDetailInfo = true;
           } else {
             _this.$message({
@@ -1456,6 +1634,7 @@ export default {
             _this.editDrugInfo.canorder = res.data[0].canorder == 1;
             _this.editDrugInfo.cansell = res.data[0].cansell == 1;
             _this.editDrugInfo.deleted = res.data[0].deleted == 1;
+            console.log("需要编辑的实体为", _this.editDrugInfo);
             console.log("编辑的供应商为", _this.editDrugInfo.providerid);
             _this.insertUnitChange(_this.editDrugInfo.instoreunit);
             _this.outUnitChange(_this.editDrugInfo.unit);
@@ -1540,11 +1719,6 @@ export default {
       //row 表示一行数据, updateTime 表示要格式化的字段名称
       return dateFormat(row.insertdate);
     },
-    //展示目录树结构
-    showCatalogTree() {
-      var _this = this;
-      _this.showTreeVisible = true;
-    },
 
     //隐藏弹出层
     hideDialog() {
@@ -1553,45 +1727,12 @@ export default {
       _this.editDrugVisible = false;
       _this.insertDrugVisible = false;
       _this.showDrugsDetailInfo = false;
+      _this.selectOrgVisible = false;
       _this.insertDrugInfo = _this.insertBaseInfo;
     },
-    append(data) {
-      const newChild = { id: data.id++, label: "testtest", children: [] };
-      if (!data.children) {
-        this.$set(data, "children", []);
-      }
-      data.children.push(newChild);
-    },
-
-    remove(node, data) {
-      const parent = node.parent;
-      const children = parent.data.children || parent.data;
-      const index = children.findIndex(d => d.id === data.id);
-      children.splice(index, 1);
-    },
-
-    renderContent(h, { node, data, store }) {
-      return (
-        <span class="custom-tree-node">
-          <span>{node.label}</span>
-          <span>
-            <el-button
-              size="mini"
-              type="text"
-              on-click={() => this.append(data)}
-            >
-              添加
-            </el-button>
-            <el-button
-              size="mini"
-              type="text"
-              on-click={() => this.remove(node, data)}
-            >
-              删除
-            </el-button>
-          </span>
-        </span>
-      );
+    hideAddCate() {
+      var _this = this;
+      _this.dialogFormVisible = false;
     }
   }
 };
@@ -1607,11 +1748,13 @@ export default {
   .newTree {
     .custom-tree-node {
       flex: 1;
-      display: flex;
-      align-items: center;
       justify-content: space-between;
+      display: flex;
       font-size: 14px;
       padding-right: 8px;
+    }
+    .el-tree-node__content {
+      height: 30px;
     }
   }
   .el-form {
@@ -1620,6 +1763,35 @@ export default {
       .el-input {
         width: 85px;
       }
+    }
+  }
+  .selectOrgClass {
+    .el-select {
+      width: 100%;
+    }
+  }
+  .el-dialog {
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /*height:600px;*/
+    max-height: calc(100% - 30px);
+    max-width: calc(100% - 30px);
+  }
+  .el-dialog .el-dialog__body {
+    flex: 1;
+    overflow: auto;
+  }
+  .fullButtonClass{
+    display:flex;
+    justify-content: flex-end;
+    align-self: end;
+    .el-button{
+      margin: 0 0 10px 0;
     }
   }
 }

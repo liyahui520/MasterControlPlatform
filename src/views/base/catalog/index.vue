@@ -24,11 +24,11 @@
                 icon="el-icon-delete"
                 @click="batchDelete"
               >{{ $t('pmedicines.PDelete') }}</el-button>
-              <el-button
+              <!-- <el-button
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
-              >{{ $t('pmedicines.Lower') }}</el-button>
+              >{{ $t('pmedicines.Lower') }}</el-button> -->
             </el-row>
             <el-table
               :data="tableData"

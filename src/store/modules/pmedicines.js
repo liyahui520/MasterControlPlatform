@@ -1,5 +1,6 @@
 import { getPmedicinesByDrugType,getPmedicinesInfo,getUsageMethods,getMedicateMethods,insertDrugsAPI,updateDrugsAPI } from '@/api/pmedicines' 
-import {getListData} from '@/utils/index'
+import { getUnitList } from '@/api/unit'
+
 
 const state = { 
 }
@@ -62,6 +63,16 @@ const actions = {
     return new Promise((resolve, reject) => { 
       updateDrugsAPI(params).then(response => {  
         resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getUnitList({ commit  },params) {
+    return new Promise((resolve, reject) => { 
+      getUnitList(params).then(response => {
+        const { data } = response   
+        resolve(data)
       }).catch(error => {
         reject(error)
       })

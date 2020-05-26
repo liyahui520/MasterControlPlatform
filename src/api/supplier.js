@@ -41,3 +41,12 @@ export function updateSupplierInfo(data) {
     data
   })
 }
+
+
+export function barchFullSupplier(data) {
+  return request({
+    url: '/hq/HqPProviders',
+    method: 'post',
+    data
+  })
+}
