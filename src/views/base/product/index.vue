@@ -99,15 +99,18 @@
                 <template slot-scope="scope">
                   <el-button
                     icon="el-icon-search"
+                    size="mini"
                     @click="showDetail(scope.row.id)"
                   >{{$t('unit.ShowDetail')}}</el-button>
                   <el-button
                     icon="el-icon-edit"
+                    size="mini"
                     @click="editSupplier(scope.row.id)"
                   >{{$t('table.edit')}}</el-button>
                   <el-button
                     icon="el-icon-delete"
                     type="danger"
+                    size="mini"
                     @click="deleteSupplier(scope.row.id)"
                   >{{$t('table.delete')}}</el-button>
                 </template>
@@ -423,7 +426,6 @@ export default {
       _this.$store
         .dispatch("product/getProductInfo", { id: id })
         .then(res => {
-          console.log("返回的数据为TCC", res);
           if (res.code == 200 && res.data.length > 0) {
             _this.supplierInfo = res.data[0];
             _this.supplierDetailVisible = true;
