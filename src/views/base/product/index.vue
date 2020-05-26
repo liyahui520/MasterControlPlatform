@@ -42,6 +42,12 @@
               style="width: 99.9%;height:100%;overflow:hidden;"
             >
               <el-table-column type="selection" align="center" width="55"></el-table-column>
+                 <el-table-column
+                prop="serialnumber"
+                :label="$t('supplier.Serialnumber')"
+                fixed="left"
+                width="200"
+              ></el-table-column>
               <!-- 机构名称 -->
               <el-table-column
                 prop="companyname"
@@ -716,7 +722,37 @@ export default {
     dateFormat: function(row, column) {
       //row 表示一行数据, updateTime 表示要格式化的字段名称
       return dateFormat(row.insertdate);
-    }
+    },
+    /**
+     * 下发生产商
+     */
+    down(){
+       var _this = this;
+     // _this.vloading = true;
+      _this.$store
+        .dispatch("hq/manufacturerHq", {orgIds:[1006]})
+        .then(res => { 
+          if(res.data.code!=200){
+             _this.$message({
+                showClose: true,
+                message: res.data.message,
+                type: "error"
+              });
+          }else{
+               _this.$message({
+                showClose: true,
+                message: "执行成功",
+                type: "success"
+              });
+          }
+          // _this.isRepeat = false;
+          // _this.vloading = false;
+        })
+        .catch(() => {
+          // _this.isRepeat = false;
+          // _this.vloading = false;
+        });
+    } 
   }
 };
 </script>

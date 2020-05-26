@@ -295,6 +295,7 @@ export default {
     EnterpriseLegalPerson:'企业法人',
     BusinessLicenseNo:'营业执照号',
     BusinessScope:'经营范围',
+    Serialnumber:'总部编码',
 
   },
   supplier:{
@@ -313,7 +314,8 @@ export default {
     BusinessScope:'经营范围',
     AddSupplier:'新增供应商',
     SupplierDetail:'供应商详情',
-    EditSupplier:'编辑供应商'
+    EditSupplier:'编辑供应商',
+    Serialnumber:'总部编码',
   },
   drugTree:{
     Catalog: '目录',
