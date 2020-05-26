@@ -1,5 +1,5 @@
 'use strict'
 module.exports = {
   NODE_ENV: '"production"',
-  VUE_APP_BASE_API:'"http://localhost:6688/"'
+  VUE_APP_BASE_API:'"http://testdataapi.warmsoft.com:6688"'
 }
