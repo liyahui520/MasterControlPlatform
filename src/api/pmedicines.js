@@ -61,3 +61,12 @@ export function getMedicateMethods(data) {
     data
   })
 }
+
+//新增药品信息
+export function insertDrugsAPI(data) {
+  return request({
+    url: '/Pmedicineds/insertInfo',
+    method: 'post',
+    data
+  })
+}

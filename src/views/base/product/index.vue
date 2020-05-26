@@ -419,7 +419,6 @@ export default {
       _this.$store
         .dispatch("product/getProductInfo", { id: id })
         .then(res => {
-          console.log("返回的数据为TCC", res);
           if (res.code == 200 && res.data.length > 0) {
             _this.supplierInfo = res.data[0];
             _this.supplierDetailVisible = true;

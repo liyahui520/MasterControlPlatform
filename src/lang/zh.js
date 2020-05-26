@@ -210,7 +210,7 @@ export default {
     UsingMethod: '使用方式',
     EnglishName: '英文名',
     DrugsNameLetter: '拼音简写',
-    InstoreUnitName: '入库单位',
+    InstoreUnitName: '出入库单位',
     OutstoreUnitName: '出库单位',
     Deleted: '状态',
     MemberPrice: '会员价',
@@ -237,7 +237,7 @@ export default {
     SpecificInMath:'产品规格换算',
     Remark:'备注',
     Unit:'投药单位',
-    
+    DrugDetail:'药品详情'
   },
   common: {
     yes: '是',
