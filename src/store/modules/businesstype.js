@@ -18,7 +18,7 @@ const actions = {
       getBusinessTypeList(params).then(response => {
         const {
           data
-        } = response
+        } = response.data
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -30,7 +30,7 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       insertBusinessType(params).then(response => {
-        resolve(response)
+        resolve(response.data)
       }).catch(error => {
         reject(error)
       })
@@ -41,7 +41,7 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       updateBusinessType(params).then(response => {
-        resolve(response)
+        resolve(response.data)
       }).catch(error => {
         reject(error)
       })
@@ -52,7 +52,7 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       getBusinessTypeInfo(params).then(response => {
-        resolve(response)
+        resolve(response.data)
       }).catch(error => {
         reject(error)
       })

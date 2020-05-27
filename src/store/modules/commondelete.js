@@ -10,7 +10,7 @@ const actions = {
   deleteInfo({ commit  },params) {
     return new Promise((resolve, reject) => { 
         deleteInfo(params).then(response => {
-        resolve(response)
+        resolve(response.data)
       }).catch(error => {
         reject(error)
       })

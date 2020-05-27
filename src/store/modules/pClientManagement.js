@@ -12,7 +12,7 @@ const actions = {
   selectBranIdByOrgId({ commit  }) {
     return new Promise((resolve, reject) => { 
       selectBranIdByOrgId().then(response => {
-        const { data } = response  
+        const { data } = response.data  
         resolve(data)
       }).catch(error => {
         reject(error)

@@ -31,7 +31,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       console.log(params)
       getLogAll(params).then(response => {
-        const { data } = response
+        const { data } = response.data
         //TODO 临时处理
         commit('SET_LOGDATA', cleanArray(data))
         console.log(data.list)
