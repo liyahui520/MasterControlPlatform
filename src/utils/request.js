@@ -74,7 +74,8 @@ service.interceptors.response.use(
   error => {
     console.log('err' + error) // for debug
     Message({
-      message: error.msg,
+      showClose:true,
+      message: error.msg||'请求失败！',
       type: 'error',
       duration: 5 * 1000
     })

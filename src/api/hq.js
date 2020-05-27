@@ -49,3 +49,13 @@ export function psyslistHq(data) {
       data
     })
   }
+
+
+//一键清洗
+export function businessTypeHq(data) {
+  return request({
+    url: '/hq/Hq',
+    method: 'post',
+    data
+  })
+}

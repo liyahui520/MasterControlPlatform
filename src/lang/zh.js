@@ -68,7 +68,7 @@ export default {
     products: '产品管理',
     Unit: '单位',
     Catalog: '目录',
-    Businesstype:'管控管理',
+    Businesstype:'机构管理',
     Product: '生产商',
     Supplier:'供应商',
     Base: '基础数据'
@@ -212,7 +212,7 @@ export default {
     DrugsNameLetter: '拼音简写',
     InstoreUnitName: '出入库单位',
     OutstoreUnitName: '出库单位',
-    Deleted: '状态',
+    Deleted: '停用',
     MemberPrice: '会员价',
     InsertDate: '创建时间',
     DoNotDiscount: '是否打折',

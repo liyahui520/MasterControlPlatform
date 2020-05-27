@@ -68,6 +68,8 @@
                     type="primary"
                     size="mini"
                     plain
+                    :disabled="scope.row.isclean==1"
+                    @click="cleanDrugs(scope.row.id,scope.row.orgid)"
                   >{{$t('table.batchClean')}}</el-button>
                 </template>
               </el-table-column>
@@ -217,6 +219,41 @@ export default {
     }
   },
   methods: {
+    //一键清洗
+    cleanDrugs(id,orgid){
+      var _this=this;
+      console.log("id为",id)
+      console.log("orgid为",orgid)
+      if(_this.isRepeat){
+        return;
+      }
+      _this.isRepeat=true;
+      _this.loading=true;
+      var questInfo={id:id,orgid:id};
+      _this.$store
+        .dispatch("hq/businessTypeHq",questInfo)
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              message: "执行成功",
+              type: "success"
+            });
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.data.message,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.loading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.loading = false;
+        });
+    },
     //加载关系表列表
     loadBusinessTypeList() {
       var _this = this;

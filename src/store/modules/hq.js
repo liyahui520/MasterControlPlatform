@@ -1,4 +1,4 @@
-import { HqPMedicines,HqPProviders,manufacturerHq,psyslistHq } from '@/api/hq' 
+import { HqPMedicines,HqPProviders,manufacturerHq,psyslistHq,businessTypeHq } from '@/api/hq' 
  
 
 const state = { 
@@ -42,6 +42,16 @@ const actions = {
   psyslistHq({ commit  },params) {
     return new Promise((resolve, reject) => { 
         psyslistHq(params).then(response => {
+        const { data } = response.data   
+        resolve(response)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  businessTypeHq({ commit  },params) {
+    return new Promise((resolve, reject) => { 
+      businessTypeHq(params).then(response => {
         const { data } = response.data   
         resolve(response)
       }).catch(error => {
