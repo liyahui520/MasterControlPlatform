@@ -31,7 +31,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       console.log(params)
       getLogAll(params).then(response => {
-        const { data } = response.data
+        console.log("提前获取日志的数据为",response)
+        const { data } = response
         //TODO 临时处理
         commit('SET_LOGDATA', cleanArray(data))
         console.log(data.list)

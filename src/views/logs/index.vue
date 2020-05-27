@@ -81,6 +81,7 @@ export default {
       this.$store
         .dispatch("log/getLogAll", this.params)
         .then(res => {
+          console.log("返回的日志列表为",res)
           this.tableData = res.list;
           this.total = res.total;
           this.page = res.pageNum;

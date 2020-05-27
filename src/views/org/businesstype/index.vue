@@ -166,7 +166,7 @@
 import Pagination from "@/components/Pagination/index";
 import dictionary from "@/common/dictionary.js";
 import { dateFormat } from "@/utils/index";
-import businessTypeLanguage from "../../../lang/zh.js";
+import businessTypeLanguage from "@/lang/zh.js";
 export default {
   components: { Pagination },
   data() {
@@ -262,10 +262,10 @@ export default {
         .dispatch("businesstype/getBusinessTypeList", _this.params)
         .then(res => {
           console.log("返回的关系列表为", res);
-          _this.tableData = res.data.list;
-          _this.total = res.data.total;
-          _this.page = res.data.pageNum;
-          _this.limit = res.data.pageSize;
+          _this.tableData = res.list;
+          _this.total = res.total;
+          _this.page = res.pageNum;
+          _this.limit = res.pageSize;
           _this.loading = false;
         })
         .catch(() => {
