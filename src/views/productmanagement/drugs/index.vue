@@ -16,6 +16,29 @@
                 ></el-input>
               </el-form-item>
               <el-form-item>
+                <el-checkbox
+                  :label="$t('pmedicines.CanOrder')"
+                  :checked="params.params.canOrder==1"
+                  border
+                  size="small"
+                  @change="canOrderChange"
+                ></el-checkbox>
+                <el-checkbox
+                  :label="$t('pmedicines.CanSell')"
+                  :checked="params.params.canSell==1"
+                  border
+                  size="small"
+                  @change="canSellChange"
+                ></el-checkbox>
+                <el-checkbox
+                  :label="$t('pmedicines.Deleted')"
+                  :checked="params.params.deleted==1"
+                  border
+                  size="small"
+                  @change="isDeleteChange"
+                ></el-checkbox>
+              </el-form-item>
+              <el-form-item>
                 <el-button type="primary" @click.native="GetTableData">{{$t('query')}}</el-button>
               </el-form-item>
               <el-form-item>
@@ -169,7 +192,7 @@
               >
                 <template slot-scope="scope">
                   <i
-                    v-if="!scope.row.donotdiscount"
+                    v-if="scope.row.donotdiscount"
                     class="iconfont icon-duihao"
                     style="color:red;font-size:18px;"
                   ></i>
@@ -184,27 +207,27 @@
               <el-table-column prop="canorder" :label="$t('pmedicines.CanOrder')" width="60">
                 <template slot-scope="scope">
                   <el-tag
-                    :type="scope.row.canorder === 0 ? 'primary' : 'danger'"
+                    :type="scope.row.canorder != 0 ? 'primary' : 'danger'"
                     disable-transitions
-                  >{{scope.row.canorder === 0 ?$t('common.yes'):$t('common.no')}}</el-tag>
+                  >{{scope.row.canorder != 0 ?$t('common.yes'):$t('common.no')}}</el-tag>
                 </template>
               </el-table-column>
               <!-- 可销 -->
               <el-table-column prop="cansell" :label="$t('pmedicines.CanSell')" width="60">
                 <template slot-scope="scope">
                   <el-tag
-                    :type="scope.row.cansell === 0 ? 'primary' : 'danger'"
+                    :type="scope.row.cansell !=0 ? 'primary' : 'danger'"
                     disable-transitions
-                  >{{scope.row.cansell === 0 ?$t('common.yes'):$t('common.no')}}</el-tag>
+                  >{{scope.row.cansell !=0 ?$t('common.yes'):$t('common.no')}}</el-tag>
                 </template>
               </el-table-column>
               <!-- 状态 -->
               <el-table-column prop="deleted" :label="$t('pmedicines.Deleted')" width="70">
                 <template slot-scope="scope">
                   <el-tag
-                    :type="scope.row.deleted === 0 ? 'primary' : 'danger'"
+                    :type="scope.row.deleted != 0 ? 'primary' : 'danger'"
                     disable-transitions
-                  >{{scope.row.deleted === 0 ?$t('common.yesDeleted'):$t('common.noDeleted')}}</el-tag>
+                  >{{scope.row.deleted != 0 ?$t('common.yesDeleted'):$t('common.noDeleted')}}</el-tag>
                 </template>
               </el-table-column>
               <!-- 创建时间 -->
@@ -219,24 +242,28 @@
                   <span style="margin-left: 2px">{{ scope.row.insertdate | dateFormat}}</span>
                 </template>
               </el-table-column>
-              <el-table-column fixed="right" :label="$t('table.actions')" width="300">
+              <el-table-column fixed="right" :label="$t('table.actions')" width="100">
                 <template slot-scope="scope">
-                  <el-button
-                    @click="showDrugsDetail(scope.row.id)"
-                    size="mini"
-                    icon="el-icon-search"
-                  >{{$t('cataLog.ShowDetail')}}</el-button>
-                  <el-button
-                    @click="showEditContent(scope.row.id)"
-                    size="mini"
-                    icon="el-icon-edit"
-                  >{{$t('table.edit')}}</el-button>
-                  <el-button
-                    icon="el-icon-delete"
-                    type="danger"
-                    size="mini"
-                    @click="signDeleteDrugsInfo(scope.row.id)"
-                  >{{$t('table.delete')}}</el-button>
+                  <el-dropdown trigger="click">
+                    <span class="el-dropdown-link">
+                      {{$t('table.actions')}}
+                      <i class="el-icon-arrow-down el-icon--right"></i>
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item
+                        icon="el-icon-plus"
+                        @click.native="showDrugsDetail(scope.row.id)"
+                      >{{$t('cataLog.ShowDetail')}}</el-dropdown-item>
+                      <el-dropdown-item
+                        icon="el-icon-search"
+                        @click.native="showEditContent(scope.row.id)"
+                      >{{$t('table.edit')}}</el-dropdown-item>
+                      <el-dropdown-item
+                        icon="el-icon-delete"
+                        @click.native="signDeleteDrugsInfo(scope.row.id)"
+                      >{{$t('table.delete')}}</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
                 </template>
               </el-table-column>
             </el-table>
@@ -267,7 +294,7 @@
           type="primary"
           icon="el-icon-download"
         >{{ $t('pmedicines.Lower') }}</el-button>
-      </div> -->
+      </div>-->
       <div class="custom-tree-container newTree">
         <div class="block">
           <el-tree :data="data" node-key="id" default-expand-all :expand-on-click-node="true">
@@ -476,17 +503,17 @@
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CanOrder')">
-              <el-switch v-model="editDrugInfo.canorder" @change="orderDrugs"></el-switch>
+              <el-switch v-model="editDrugInfo.canorder" @change="orderDrugs(false)"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CanSell')">
-              <el-switch v-model="editDrugInfo.cansell" @change="orderDrugs"></el-switch>
+              <el-switch v-model="editDrugInfo.cansell" @change="orderDrugs(false)"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.Deleted')">
-              <el-switch v-model="editDrugInfo.deleted" @change="deleteDrugs"></el-switch>
+              <el-switch v-model="editDrugInfo.deleted" @change="deleteDrugs(false)"></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
@@ -736,17 +763,17 @@
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CanOrder')">
-              <el-switch v-model="insertDrugInfo.canorder" @change="orderDrugs"></el-switch>
+              <el-switch v-model="insertDrugInfo.canorder" @change="orderDrugs(true)"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CanSell')">
-              <el-switch v-model="insertDrugInfo.cansell" @change="orderDrugs"></el-switch>
+              <el-switch v-model="insertDrugInfo.cansell" @change="orderDrugs(true)"></el-switch>
             </el-form-item>
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.Deleted')">
-              <el-switch v-model="insertDrugInfo.deleted" @change="deleteDrugs"></el-switch>
+              <el-switch v-model="insertDrugInfo.deleted" @change="deleteDrugs(true)"></el-switch>
             </el-form-item>
           </el-col>
         </el-row>
@@ -982,6 +1009,7 @@
       :visible.sync="selectOrgVisible"
       width="30%"
       :close-on-click-modal="false"
+      v-loading="orgLoading"
     >
       <el-form :label-width="formLabelWidth">
         <el-form-item :label="$t('unit.OrgName')" class="selectOrgClass">
@@ -1048,7 +1076,9 @@ export default {
         pageSize: 10,
         params: {
           drugType: 1046,
-          deleted: 0
+          deleted: 0,
+          canOrder: 1,
+          canSell: 1
         }
       },
       tableData: [],
@@ -1147,7 +1177,9 @@ export default {
         }
       },
       dialogFormVisible: false,
-      cateParentid: null
+      cateParentid: null,
+      orgLoading: false,
+      visible: false
     };
   },
   created() {
@@ -1175,6 +1207,24 @@ export default {
     _this.loadOrgList();
   },
   methods: {
+    //是否停用
+    isDeleteChange(value) {
+      console.log("是否停用的商品", value);
+      var _this = this;
+      _this.params.params.deleted = value?1:0;
+    },
+    //是否可销
+    canSellChange(value) {
+      console.log("是否可销的商品", value);
+      var _this = this;
+      _this.params.params.canSell = value?1:0;
+    },
+    //是否可订
+    canOrderChange(value) {
+      console.log("是否可订的商品", value);
+      var _this = this;
+      _this.params.params.canOrder = value?1:0;
+    },
     saveCate() {
       var _this = this;
       if (_this.catename == null || _this.catename == "") {
@@ -1263,7 +1313,7 @@ export default {
               tableType: 0
             })
             .then(res => {
-              console.log("调用删除返回的结果为",res)
+              console.log("调用删除返回的结果为", res);
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
@@ -1306,10 +1356,23 @@ export default {
     //批量下发
     fullUnit() {
       var _this = this;
+      var drugids = _this.$refs.drugsTable.selection.map(function(info) {
+        return info.id;
+      });
       if (_this.isRepeat) {
         return;
       }
+      if (drugids.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请选择要下发的产品数据",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
       _this.isRepeat = true;
+      _this.orgLoading = true;
       if (_this.selectOrgIDArray.length <= 0) {
         _this.$message({
           showClose: true,
@@ -1319,6 +1382,34 @@ export default {
         _this.isRepeat = false;
         return;
       }
+
+      _this.$store
+        .dispatch("hq/HqPMedicines", {
+          orgIds: _this.selectOrgIDArray,
+          ids: drugids
+        })
+        .then(res => {
+          if (res.code == 200) {
+            _this.$message({
+              showClose: true,
+              message: "执行成功",
+              type: "success"
+            });
+            _this.selectOrgVisible = false;
+          } else {
+            _this.$message({
+              showClose: true,
+              message: res.data.message,
+              type: "error"
+            });
+          }
+          _this.isRepeat = false;
+          _this.orgLoading = false;
+        })
+        .catch(() => {
+          _this.isRepeat = false;
+          _this.orgLoading = false;
+        });
     },
     //批量删除药品信息
     batchDeleteDrugsInfo() {
@@ -1523,18 +1614,35 @@ export default {
         _this.insertDrugInfo.drugsName
       );
     },
-    orderDrugs() {
+    orderDrugs(state) {
       var _this = this;
-      if (_this.insertDrugInfo.canorder || _this.insertDrugInfo.cansell)
-        _this.insertDrugInfo.deleted = false;
-      else if (!_this.insertDrugInfo.canorder && !_this.insertDrugInfo.cansell)
-        _this.insertDrugInfo.deleted = false;
+      if (state) {
+        if (_this.insertDrugInfo.canorder || _this.insertDrugInfo.cansell)
+          _this.insertDrugInfo.deleted = false;
+        else if (
+          !_this.insertDrugInfo.canorder &&
+          !_this.insertDrugInfo.cansell
+        )
+          _this.insertDrugInfo.deleted = false;
+      } else {
+        if (_this.editDrugInfo.canorder || _this.editDrugInfo.cansell)
+          _this.editDrugInfo.deleted = false;
+        else if (!_this.editDrugInfo.canorder && !_this.editDrugInfo.cansell)
+          _this.editDrugInfo.deleted = false;
+      }
     },
-    deleteDrugs() {
+    deleteDrugs(state) {
       var _this = this;
-      if (_this.insertDrugInfo.deleted) {
-        _this.insertDrugInfo.canorder = false;
-        _this.insertDrugInfo.cansell = false;
+      if (state) {
+        if (_this.insertDrugInfo.deleted) {
+          _this.insertDrugInfo.canorder = false;
+          _this.insertDrugInfo.cansell = false;
+        }
+      } else {
+        if (_this.editDrugInfo.deleted) {
+          _this.editDrugInfo.canorder = false;
+          _this.editDrugInfo.cansell = false;
+        }
       }
     },
     insertUnitChange(value) {
@@ -1691,11 +1799,18 @@ export default {
     GetTableData: function() {
       this.loading = true;
       this.params.params.category = this.categoryId;
+      console.log("查询传输的参数为",JSON.stringify(this.params))
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
         .then(res => {
           console.log("结果", res);
           this.tableData = res.list;
+          for (let index = 0; index < res.list.length; index++) {
+            const element = res.list[index];
+            console.log("可订",element.canorder)
+            console.log("可销",element.cansell)
+            console.log("停用",element.deleted)
+          }
           this.total = res.total;
           this.page = res.pageNum;
           this.limit = res.pageSize;
@@ -1787,13 +1902,17 @@ export default {
     flex: 1;
     overflow: auto;
   }
-  .fullButtonClass{
-    display:flex;
+  .fullButtonClass {
+    display: flex;
     justify-content: flex-end;
     align-self: end;
-    .el-button{
+    .el-button {
       margin: 0 0 10px 0;
     }
+  }
+  .actionsButtonClass {
+    display: flex;
+    justify-content: space-between;
   }
 }
 </style>

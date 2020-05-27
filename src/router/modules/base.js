@@ -18,18 +18,6 @@ const baseRouter = {
       component: () => import('@/views/base/unit/index'),
       meta: { title: 'Unit' }
     },
-    // {
-    //   path: 'catalog',
-    //   name: 'Catalog',
-    //   component: () => import('@/views/base/catalog/index'),
-    //   meta: { title: 'Catalog' }
-    // },
-    {
-      path: 'businesstype',
-      name: 'Businesstype',
-      component: () => import('@/views/base/businesstype/index'),
-      meta: { title: 'Businesstype' }
-    },
     {
       path: 'product',
       name: 'Product',

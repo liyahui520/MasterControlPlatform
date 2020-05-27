@@ -13,6 +13,7 @@ module.exports = {
     proxyTable: {
       '/api': {
         target: 'http://localhost:6688/',
+        // target: 'http://testdataapi.warmsoft.com:6688/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

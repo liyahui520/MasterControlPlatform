@@ -14,6 +14,8 @@ import Layout from '@/layout'
 import productRouter from './modules/productmanaement'
 import baseRouter from './modules/base'
 
+import orgRouter from './modules/org'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -71,6 +73,19 @@ export const constantRoutes = [
     path: '/401',
     component: () => import('@/views/error-page/401'),
     hidden: true
+  },
+    {
+    path: '/',
+    component: Layout,
+    redirect: '/products/drugs',
+    // children: [
+    //   {
+    //     path: 'products',
+    //     component: () => import('@/views/dashboard/index'),
+    //     name: 'Dashboard',
+    //     meta: { title: 'dashboard', icon: 'dashboard', affix: true }
+    //   }
+    // ]
   },
   // {
   //   path: '/',
@@ -133,6 +148,7 @@ export const constantRoutes = [
 export const asyncRoutes = [
   productRouter,
   baseRouter,
+  orgRouter,
   // {
   //   path: '/permission',
   //   component: Layout,
