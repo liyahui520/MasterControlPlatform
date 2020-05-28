@@ -20,12 +20,12 @@
                 icon="el-icon-delete"
                 @click="batchDelete"
               >{{ $t('pmedicines.PDelete') }}</el-button>
-              <!-- <el-button
+              <el-button
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
                 @click="batchFullProduct"
-              >{{ $t('pmedicines.Lower') }}</el-button> -->
+              >{{ $t('pmedicines.Lower') }}</el-button>
               <el-button
                 type="success"
                 class="buRight"
@@ -353,26 +353,26 @@ export default {
         _this.isRepeat = false;
         return;
       }
+      console.log("生产商传输的机构id为",_this.selectOrgIDArray)
       _this.$store
         .dispatch("product/barchFullProduct", {
           orgIds: _this.selectOrgIDArray
         })
         .then(res => {
-          if (res.code == 200) {
+          if (res.data.code == 200) {
             _this.$message({
               showClose: true,
               type: "success",
               message: "下发成功"
             });
-            _this.deleteIds = [];
-            _this.loadSupplierList();
           } else {
             _this.$message({
               showClose: true,
-              message: res.msg,
+              message: res.data.message,
               type: "error"
             });
           }
+          _this.selectOrgVisible=false;
           _this.isRepeat = false;
           _this.loading = false;
         })
@@ -526,6 +526,7 @@ export default {
       _this.dialogFormVisible = false;
       _this.supplierDetailVisible = false;
       _this.editSupplierVisible = false;
+      _this.selectOrgVisible=false;
     },
     //判断内容是否为空
     isNullOrEmpty(content) {

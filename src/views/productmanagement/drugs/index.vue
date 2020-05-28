@@ -288,13 +288,15 @@
       width="30%"
       height="200px"
       :close-on-click-modal="false"
+      
     >
-      <!-- <div class="fullButtonClass">
+      <div class="fullButtonClass">
         <el-button
           type="primary"
           icon="el-icon-download"
+          @click="fullCateData"
         >{{ $t('pmedicines.Lower') }}</el-button>
-      </div>-->
+      </div>
       <div class="custom-tree-container newTree">
         <div class="block">
           <el-tree :data="data" node-key="id" default-expand-all :expand-on-click-node="true">
@@ -1028,6 +1030,32 @@
         <el-button type="primary" @click="fullUnit">{{$t('table.confirm')}}</el-button>
       </div>
     </el-dialog>
+
+
+    <el-dialog
+      :title="$t('unit.BatchFull')"
+      :visible.sync="selectCateOrgVisible"
+      width="30%"
+      :close-on-click-modal="false"
+      v-loading="vloading"
+    >
+      <el-form :label-width="formLabelWidth">
+        <el-form-item :label="$t('unit.OrgName')" class="selectOrgClass">
+          <el-select v-model="selectCateOrgIDArray" multiple>
+            <el-option
+              v-for="(orgInfo,index) in orgList"
+              :label="orgInfo.orgname"
+              :value="orgInfo.id"
+              :key="index"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="hideDialog">{{$t('table.cancel')}}</el-button>
+        <el-button type="primary" @click="saveFullCateData">{{$t('table.confirm')}}</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -1180,7 +1208,10 @@ export default {
       dialogFormVisible: false,
       cateParentid: null,
       orgLoading: false,
-      visible: false
+      visible: false,
+      selectCateOrgVisible:false,
+      vloading:false,
+      selectCateOrgIDArray:[],
     };
   },
   created() {
@@ -1208,6 +1239,54 @@ export default {
     _this.loadOrgList();
   },
   methods: {
+    fullCateData(){
+      var _this=this;
+      _this.selectCateOrgIDArray=[];
+      _this.selectCateOrgVisible = true;
+    },
+    saveFullCateData(){
+      var _this = this;
+      if (_this.isRepeat) {
+        return;
+      }
+      _this.isRepeat = true;
+      if (_this.selectCateOrgIDArray.length <= 0) {
+        _this.$message({
+          showClose: true,
+          message: "请选择机构名称",
+          type: "error"
+        });
+        _this.isRepeat = false;
+        return;
+      }
+      _this.vloading = true;
+      console.log("目录下发的时候选择的机构为",_this.selectCateOrgIDArray)
+      _this.$store
+        .dispatch("hq/psyslistHq", {status:1,orgIds:_this.selectCateOrgIDArray,isDelete:1})
+        .then(res => { 
+          if(res.data.code!=200){
+             _this.$message({
+                showClose: true,
+                message: res.data.message,
+                type: "error"
+              });
+          }else{
+               _this.$message({
+                showClose: true,
+                message: "执行成功",
+                type: "success"
+              });
+          }
+          _this.selectCateOrgVisible=false;
+          _this.isRepeat = false;
+          _this.vloading = false;
+        })
+        .catch(() => {
+          _this.selectCateOrgVisible=false;
+          _this.isRepeat = false;
+          _this.vloading = false;
+        });
+    },
     //是否停用
     isDeleteChange(value) {
       var _this = this;
@@ -1337,6 +1416,7 @@ export default {
     },
     showFullDrug() {
       var _this = this;
+      _this.selectOrgIDArray=[];
       _this.selectOrgVisible = true;
     },
     //加载机构列表
@@ -1387,7 +1467,7 @@ export default {
           ids: drugids
         })
         .then(res => {
-          if (res.code == 200) {
+          if (res.data.code == 200) {
             _this.$message({
               showClose: true,
               message: "执行成功",
@@ -1799,7 +1879,6 @@ export default {
     GetTableData: function() {
       this.loading = true;
       this.params.params.category = this.categoryId;
-      console.log("查询传输的参数为",JSON.stringify(this.params))
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
         .then(res => {
@@ -1837,6 +1916,7 @@ export default {
       _this.insertDrugVisible = false;
       _this.showDrugsDetailInfo = false;
       _this.selectOrgVisible = false;
+      _this.selectCateOrgVisible=false;
       _this.insertDrugInfo = _this.insertBaseInfo;
     },
     hideAddCate() {

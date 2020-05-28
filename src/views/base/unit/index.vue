@@ -23,12 +23,12 @@
                 icon="el-icon-delete"
                 @click="batchDeleteUnit"
               >{{ $t('pmedicines.PDelete') }}</el-button>
-              <!-- <el-button
+              <el-button
                 class="buRight"
                 type="primary"
                 icon="el-icon-download"
                 @click="batchFull"
-              >{{ $t('pmedicines.Lower') }}</el-button> -->
+              >{{ $t('pmedicines.Lower') }}</el-button>
               <el-button
                 type="success"
                 class="buRight"
@@ -487,6 +487,7 @@ export default {
       }
       var _this = this;
       _this.vloading = true;
+      console.log("下发前选择的机构为",_this.selectOrgIDArray)
       _this.$store
         .dispatch("hq/psyslistHq", {status:0,orgIds:_this.selectOrgIDArray})
         .then(res => { 
@@ -503,10 +504,12 @@ export default {
                 type: "success"
               });
           }
+          _this.selectOrgVisible=false;
           _this.isRepeat = false;
           _this.vloading = false;
         })
         .catch(() => {
+          _this.selectOrgVisible=false;
           _this.isRepeat = false;
           _this.vloading = false;
         });

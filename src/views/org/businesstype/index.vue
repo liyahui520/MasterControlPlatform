@@ -68,7 +68,6 @@
                     type="primary"
                     size="mini"
                     plain
-                    :disabled="scope.row.isclean==1"
                     @click="cleanDrugs(scope.row.id,scope.row.orgid)"
                   >{{$t('table.batchClean')}}</el-button>
                 </template>
