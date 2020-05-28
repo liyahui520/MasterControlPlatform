@@ -558,7 +558,7 @@
               1
               {{instoreUnitName}}
               =
-              <el-input type="number" v-model="editDrugInfo.specificoutmath" />
+              <el-input type="number" v-model="editDrugInfo.specificmath" />
               {{outstoreUnitName}}
             </el-form-item>
           </el-col>
@@ -818,7 +818,7 @@
               1
               {{instoreUnitName}}
               =
-              <el-input type="number" v-model="insertDrugInfo.specificoutmath" />
+              <el-input type="number" v-model="insertDrugInfo.specificmath" />
               {{outstoreUnitName}}
             </el-form-item>
           </el-col>
@@ -974,7 +974,7 @@
               1
               {{drugsDetailInfo.instoreunitname}}
               =
-              {{drugsDetailInfo.specificoutmath}}
+              {{drugsDetailInfo.specificmath}}
               {{drugsDetailInfo.unitname}}
             </el-form-item>
           </el-col>
@@ -1136,6 +1136,7 @@ export default {
         description: "",
         instoreprice: 0,
         outstoreprice: null,
+
         unit: null,
         specific: "",
         count: 0,
@@ -1156,7 +1157,9 @@ export default {
         commonname: "",
         specificinmath: 1,
         specificoutmath:1,
+        specificmath:null,
         outstoreunit: null,
+        mincount:null,
         canorder: true,
         cansell: true,
         brandid: null,
@@ -1568,10 +1571,11 @@ export default {
           _this.editDrugInfo.deleted = _this.editDrugInfo.deleted ? 1 : 0;
           _this.editDrugInfo.canorder = _this.editDrugInfo.canorder ? 1 : 0;
           _this.editDrugInfo.cansell = _this.editDrugInfo.cansell ? 1 : 0;
-          _this.deleteObjectValue("insertdate");
-          _this.deleteObjectValue("validdate");
-          _this.deleteObjectValue("updatestamp");
-          _this.deleteObjectValue("lastupdateuserId");
+          _this.editDrugInfo.specificinmath = 1;
+          _this.editDrugInfo.specificoutmath = _this.editDrugInfo.specificmath;
+          _this.editDrugInfo.mincount = _this.editDrugInfo.specificmath;
+          _this.editDrugInfo.updatestamp = null;
+
           console.log("需要提交的对象为", _this.editDrugInfo);
           _this.$store
             .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
@@ -1637,6 +1641,9 @@ export default {
           _this.insertDrugInfo.deleted = _this.insertDrugInfo.deleted ? 1 : 0;
           _this.insertDrugInfo.canorder = _this.insertDrugInfo.canorder ? 1 : 0;
           _this.insertDrugInfo.cansell = _this.insertDrugInfo.cansell ? 1 : 0;
+          _this.insertDrugInfo.specificinmath = 1;
+          _this.insertDrugInfo.specificoutmath = _this.insertDrugInfo.specificmath;
+          _this.insertDrugInfo.mincount = _this.insertDrugInfo.specificmath;
           _this.$store
             .dispatch("pmedicines/insertDrugsAPI", _this.insertDrugInfo)
             .then(res => {

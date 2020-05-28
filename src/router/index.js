@@ -280,18 +280,18 @@ export const asyncRoutes = [
   //   ]
   // },
 
-  {
-    path: '/logs',
-    component: Layout,
-    children: [
-      {
-        path: 'log',
-        component: () => import('@/views/logs/index'),
-        name: 'ErrorLog',
-        meta: { title: 'errorLog', icon: 'bug' }
-      }
-    ]
-  },
+  // {
+  //   path: '/logs',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'log',
+  //       component: () => import('@/views/logs/index'),
+  //       name: 'ErrorLog',
+  //       meta: { title: 'errorLog', icon: 'bug' }
+  //     }
+  //   ]
+  // },
 
   // {
   //   path: '/excel',
