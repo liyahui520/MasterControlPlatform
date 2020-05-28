@@ -1,16 +1,18 @@
-import { deleteInfo } from '@/api/commondelete'
+import {
+  deleteInfo
+} from '@/api/commondelete'
 
-const state = { 
-}
+const state = {}
 
-const mutations = { 
-}
+const mutations = {}
 
 const actions = {
-  deleteInfo({ commit  },params) {
-    return new Promise((resolve, reject) => { 
-        deleteInfo(params).then(response => {
-        resolve(response.data)
+  deleteInfo({
+    commit
+  }, params) {
+    return new Promise((resolve, reject) => {
+      deleteInfo(params).then(response => {
+        resolve(response)
       }).catch(error => {
         reject(error)
       })

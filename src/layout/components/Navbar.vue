@@ -22,7 +22,8 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          {{userName}}
+          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -79,6 +80,16 @@ export default {
       'avatar',
       'device'
     ])
+  },
+  data(){
+    return {
+      userName:''
+    };
+  },
+  created(){
+    var _this=this;
+    console.log("本地存在的stroe为",_this.$store.getters.name)
+    _this.userName=_this.$store.getters.name;
   },
   methods: {
     toggleSideBar() {

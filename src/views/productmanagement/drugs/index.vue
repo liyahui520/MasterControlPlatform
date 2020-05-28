@@ -477,7 +477,7 @@
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.InstorePrice')">
-              <el-input type="number" v-model="editDrugInfo.instoreprice" />
+              <el-input disabled type="number" v-model="editDrugInfo.instoreprice" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -556,7 +556,7 @@
               1
               {{instoreUnitName}}
               =
-              <el-input type="number" v-model="editDrugInfo.specificinmath" />
+              <el-input type="number" v-model="editDrugInfo.specificoutmath" />
               {{outstoreUnitName}}
             </el-form-item>
           </el-col>
@@ -737,7 +737,7 @@
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.InstorePrice')">
-              <el-input type="number" v-model="insertDrugInfo.instoreprice" />
+              <el-input disabled type="number" v-model="insertDrugInfo.instoreprice" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -816,7 +816,7 @@
               1
               {{instoreUnitName}}
               =
-              <el-input type="number" v-model="insertDrugInfo.specificinmath" />
+              <el-input type="number" v-model="insertDrugInfo.specificoutmath" />
               {{outstoreUnitName}}
             </el-form-item>
           </el-col>
@@ -972,7 +972,7 @@
               1
               {{drugsDetailInfo.instoreunitname}}
               =
-              {{drugsDetailInfo.specificinmath}}
+              {{drugsDetailInfo.specificoutmath}}
               {{drugsDetailInfo.unitname}}
             </el-form-item>
           </el-col>
@@ -1106,7 +1106,7 @@ export default {
         ingredient: "",
         drugsName: "",
         description: "",
-        instoreprice: null,
+        instoreprice: 0,
         outstoreprice: null,
         unit: null,
         specific: "",
@@ -1127,6 +1127,7 @@ export default {
         costprice: null,
         commonname: "",
         specificinmath: 1,
+        specificoutmath:1,
         outstoreunit: null,
         canorder: true,
         cansell: true,
@@ -1209,19 +1210,16 @@ export default {
   methods: {
     //是否停用
     isDeleteChange(value) {
-      console.log("是否停用的商品", value);
       var _this = this;
       _this.params.params.deleted = value?1:0;
     },
     //是否可销
     canSellChange(value) {
-      console.log("是否可销的商品", value);
       var _this = this;
       _this.params.params.canSell = value?1:0;
     },
     //是否可订
     canOrderChange(value) {
-      console.log("是否可订的商品", value);
       var _this = this;
       _this.params.params.canOrder = value?1:0;
     },
@@ -1718,6 +1716,8 @@ export default {
     showAddDrug() {
       var _this = this;
       _this.insertDrugVisible = true;
+      _this.instoreUnitName= "入库单位";
+      _this.outstoreUnitName= "出库单位";
     },
     //加载单位列表
     loadUnitList() {
@@ -1803,14 +1803,7 @@ export default {
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
         .then(res => {
-          console.log("结果", res);
           this.tableData = res.list;
-          for (let index = 0; index < res.list.length; index++) {
-            const element = res.list[index];
-            console.log("可订",element.canorder)
-            console.log("可销",element.cansell)
-            console.log("停用",element.deleted)
-          }
           this.total = res.total;
           this.page = res.pageNum;
           this.limit = res.pageSize;

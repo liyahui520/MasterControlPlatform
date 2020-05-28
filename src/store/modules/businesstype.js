@@ -30,7 +30,7 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       insertBusinessType(params).then(response => {
-        resolve(response.data)
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
@@ -41,7 +41,7 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       updateBusinessType(params).then(response => {
-        resolve(response.data)
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
@@ -52,7 +52,7 @@ const actions = {
   }, params) {
     return new Promise((resolve, reject) => {
       getBusinessTypeInfo(params).then(response => {
-        resolve(response.data)
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
