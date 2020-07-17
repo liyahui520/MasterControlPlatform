@@ -90,23 +90,25 @@ export default {
   components: { LangSelect, SocialSign },
   data() {
     const validateUsername = (rule, value, callback) => {
-      // if (!validUsername(value)) {
-      //   callback(new Error('Please enter the correct user name'))
-      // } else {
-        callback()
-      // }
+      if (value==null||value==''||value==undefined) {
+        callback(new Error('请输入正确的用户名'))
+      } else {
+      callback();
+      }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (value==null||value==''||value==undefined) {
+        callback(new Error("请输入密码"));
       } else {
-        callback()
+        callback();
       }
     }
     return {
       loginForm: {
-        username: '赵欢欢JFYF',
-        password: '123456'
+        // username: '赵欢欢JFYF',
+        // password: '123456'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -178,6 +180,17 @@ export default {
               this.loading = false
             })
             .catch(() => {
+              if (err.hasOwnProperty("code")) {
+                this.$message({
+                  message: err.msg,
+                  type: "error"
+                });
+              } else {
+                this.$message({
+                  message: "服务器异常，请稍后重试",
+                  type: "error"
+                });
+              }
               this.loading = false
             })
         } else {

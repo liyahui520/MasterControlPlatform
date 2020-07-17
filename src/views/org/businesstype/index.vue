@@ -248,7 +248,19 @@ export default {
           _this.isRepeat = false;
           _this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "清洗失败,请稍后重试",
+              type: "error"
+            });
+          }
           _this.isRepeat = false;
           _this.loading = false;
         });
@@ -260,14 +272,25 @@ export default {
       _this.$store
         .dispatch("businesstype/getBusinessTypeList", _this.params)
         .then(res => {
-          console.log("返回的关系列表为", res);
           _this.tableData = res.list;
           _this.total = res.total;
           _this.page = res.pageNum;
           _this.limit = res.pageSize;
           _this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "数据加载失败,请稍后重试",
+              type: "error"
+            });
+          }
           _this.loading = false;
         });
     },
@@ -302,7 +325,19 @@ export default {
             });
           }
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "网络出错，请稍后重试",
+              type: "error"
+            });
+          }
           _this.loading = false;
         });
     },
@@ -377,7 +412,19 @@ export default {
           _this.isRepeat = false;
           _this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+                    if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "网络出错，请稍后重试",
+              type: "error"
+            });
+          }
           _this.isRepeat = false;
           _this.loading = false;
         });
@@ -433,7 +480,19 @@ export default {
           _this.isRepeat = false;
           _this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "网络出错，请稍后重试",
+              type: "error"
+            });
+          }
           _this.isRepeat = false;
           _this.loading = false;
         });

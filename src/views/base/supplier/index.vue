@@ -375,7 +375,7 @@ export default {
               type: "error"
             });
           }
-          _this.selectOrgVisible=false;
+          _this.hideDialog();
           _this.isRepeat = false;
           _this.loading = false;
         })
@@ -543,6 +543,7 @@ export default {
       _this.supplierDetailVisible = false;
       _this.editSupplierVisible = false;
       _this.selectOrgVisible=false;
+      _this.selectOrgIDArray=[];
     },
     //判断内容是否为空
     isNullOrEmpty(content) {

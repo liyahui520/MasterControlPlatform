@@ -77,8 +77,6 @@ export default {
   watch: {
     treeData(oldVal, newVal) {
       this.data = oldVal;
-      console.log("oldVal");
-      console.log(oldVal);
     }
   }
 };

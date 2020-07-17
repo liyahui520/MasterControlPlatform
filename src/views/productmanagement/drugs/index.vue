@@ -288,7 +288,6 @@
       width="30%"
       height="200px"
       :close-on-click-modal="false"
-      
     >
       <div class="fullButtonClass">
         <el-button
@@ -1031,7 +1030,6 @@
       </div>
     </el-dialog>
 
-
     <el-dialog
       :title="$t('unit.BatchFull')"
       :visible.sync="selectCateOrgVisible"
@@ -1111,7 +1109,7 @@ export default {
       },
       tableData: [],
       categoryId: 1006,
-      categoryName: "",
+      categoryName: "药品目录",
       showTreeVisible: false,
       editDrugVisible: false,
       insertDrugVisible: false,
@@ -1156,10 +1154,10 @@ export default {
         costprice: null,
         commonname: "",
         specificinmath: 1,
-        specificoutmath:1,
-        specificmath:null,
+        specificoutmath: 1,
+        specificmath: null,
         outstoreunit: null,
-        mincount:null,
+        mincount: null,
         canorder: true,
         cansell: true,
         brandid: null,
@@ -1212,9 +1210,9 @@ export default {
       cateParentid: null,
       orgLoading: false,
       visible: false,
-      selectCateOrgVisible:false,
-      vloading:false,
-      selectCateOrgIDArray:[],
+      selectCateOrgVisible: false,
+      vloading: false,
+      selectCateOrgIDArray: []
     };
   },
   created() {
@@ -1242,12 +1240,12 @@ export default {
     _this.loadOrgList();
   },
   methods: {
-    fullCateData(){
-      var _this=this;
-      _this.selectCateOrgIDArray=[];
+    fullCateData() {
+      var _this = this;
+      _this.selectCateOrgIDArray = [];
       _this.selectCateOrgVisible = true;
     },
-    saveFullCateData(){
+    saveFullCateData() {
       var _this = this;
       if (_this.isRepeat) {
         return;
@@ -1263,29 +1261,33 @@ export default {
         return;
       }
       _this.vloading = true;
-      console.log("目录下发的时候选择的机构为",_this.selectCateOrgIDArray)
+      console.log("目录下发的时候选择的机构为", _this.selectCateOrgIDArray);
       _this.$store
-        .dispatch("hq/psyslistHq", {status:1,orgIds:_this.selectCateOrgIDArray,isDelete:1})
-        .then(res => { 
-          if(res.data.code!=200){
-             _this.$message({
-                showClose: true,
-                message: res.data.message,
-                type: "error"
-              });
-          }else{
-               _this.$message({
-                showClose: true,
-                message: "执行成功",
-                type: "success"
-              });
+        .dispatch("hq/psyslistHq", {
+          status: 1,
+          orgIds: _this.selectCateOrgIDArray,
+          isDelete: 1
+        })
+        .then(res => {
+          if (res.data.code != 200) {
+            _this.$message({
+              showClose: true,
+              message: res.data.message,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              showClose: true,
+              message: "执行成功",
+              type: "success"
+            });
           }
-          _this.selectCateOrgVisible=false;
+          _this.selectCateOrgVisible = false;
           _this.isRepeat = false;
           _this.vloading = false;
         })
         .catch(() => {
-          _this.selectCateOrgVisible=false;
+          _this.selectCateOrgVisible = false;
           _this.isRepeat = false;
           _this.vloading = false;
         });
@@ -1293,17 +1295,17 @@ export default {
     //是否停用
     isDeleteChange(value) {
       var _this = this;
-      _this.params.params.deleted = value?1:0;
+      _this.params.params.deleted = value ? 1 : 0;
     },
     //是否可销
     canSellChange(value) {
       var _this = this;
-      _this.params.params.canSell = value?1:0;
+      _this.params.params.canSell = value ? 1 : 0;
     },
     //是否可订
     canOrderChange(value) {
       var _this = this;
-      _this.params.params.canOrder = value?1:0;
+      _this.params.params.canOrder = value ? 1 : 0;
     },
     saveCate() {
       var _this = this;
@@ -1419,7 +1421,7 @@ export default {
     },
     showFullDrug() {
       var _this = this;
-      _this.selectOrgIDArray=[];
+      _this.selectOrgIDArray = [];
       _this.selectOrgVisible = true;
     },
     //加载机构列表
@@ -1467,7 +1469,8 @@ export default {
       _this.$store
         .dispatch("hq/HqPMedicines", {
           orgIds: _this.selectOrgIDArray,
-          ids: drugids
+          ids: drugids,
+          drugType:1046
         })
         .then(res => {
           if (res.data.code == 200) {
@@ -1487,7 +1490,19 @@ export default {
           _this.isRepeat = false;
           _this.orgLoading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "数据加载失败，请稍后重试",
+              type: "error"
+            });
+          }
           _this.isRepeat = false;
           _this.orgLoading = false;
         });
@@ -1575,8 +1590,6 @@ export default {
           _this.editDrugInfo.specificoutmath = _this.editDrugInfo.specificmath;
           _this.editDrugInfo.mincount = _this.editDrugInfo.specificmath;
           _this.editDrugInfo.updatestamp = null;
-
-          console.log("需要提交的对象为", _this.editDrugInfo);
           _this.$store
             .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
             .then(res => {
@@ -1642,11 +1655,13 @@ export default {
           _this.insertDrugInfo.canorder = _this.insertDrugInfo.canorder ? 1 : 0;
           _this.insertDrugInfo.cansell = _this.insertDrugInfo.cansell ? 1 : 0;
           _this.insertDrugInfo.specificinmath = 1;
-          _this.insertDrugInfo.specificoutmath = _this.insertDrugInfo.specificmath;
+          _this.insertDrugInfo.specificoutmath =
+            _this.insertDrugInfo.specificmath;
           _this.insertDrugInfo.mincount = _this.insertDrugInfo.specificmath;
           _this.$store
             .dispatch("pmedicines/insertDrugsAPI", _this.insertDrugInfo)
             .then(res => {
+              console.log("数据上传完成以后的信息为",res)
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
@@ -1664,7 +1679,8 @@ export default {
               }
               _this.loading = false;
             })
-            .catch(() => {
+            .catch((err) => {
+              console.log("数据上传失败以后的报错信息为",err)
               _this.loading = false;
             });
         } else {
@@ -1803,8 +1819,8 @@ export default {
     showAddDrug() {
       var _this = this;
       _this.insertDrugVisible = true;
-      _this.instoreUnitName= "入库单位";
-      _this.outstoreUnitName= "出库单位";
+      _this.instoreUnitName = "入库单位";
+      _this.outstoreUnitName = "出库单位";
     },
     //加载单位列表
     loadUnitList() {
@@ -1830,8 +1846,6 @@ export default {
             _this.editDrugInfo.canorder = res.data[0].canorder == 1;
             _this.editDrugInfo.cansell = res.data[0].cansell == 1;
             _this.editDrugInfo.deleted = res.data[0].deleted == 1;
-            console.log("需要编辑的实体为", _this.editDrugInfo);
-            console.log("编辑的供应商为", _this.editDrugInfo.providerid);
             _this.insertUnitChange(_this.editDrugInfo.instoreunit);
             _this.outUnitChange(_this.editDrugInfo.unit);
             _this.editDrugVisible = true;
@@ -1873,7 +1887,11 @@ export default {
      * {点击数据} nodeData
      */
     handleClick: function(nodeData) {
-      console.log(nodeData);
+      if (nodeData.id == 1006) {
+        this.categoryId = -1;
+      } else {
+        this.categoryId = nodeData.id;
+      }
       this.categoryId = nodeData.id;
       this.categoryName = nodeData.name;
       this.insertDrugInfo.category = nodeData.id;
@@ -1884,11 +1902,17 @@ export default {
      * 获取Table数据
      */
     GetTableData: function() {
+      var _this=this;
       this.loading = true;
-      this.params.params.category = this.categoryId;
+      if (this.categoryId == 1001) {
+        this.params.params.category = -1;
+      } else {
+        this.params.params.category = this.categoryId;
+      }
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
         .then(res => {
+          
           this.tableData = res.list;
           this.total = res.total;
           this.page = res.pageNum;
@@ -1896,6 +1920,17 @@ export default {
           this.loading = false;
         })
         .catch(() => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "数据加载失败，请稍后重试",
+              type: "error"
+            });
+          }
           this.loading = false;
         });
     },
@@ -1923,7 +1958,7 @@ export default {
       _this.insertDrugVisible = false;
       _this.showDrugsDetailInfo = false;
       _this.selectOrgVisible = false;
-      _this.selectCateOrgVisible=false;
+      _this.selectCateOrgVisible = false;
       _this.insertDrugInfo = _this.insertBaseInfo;
     },
     hideAddCate() {

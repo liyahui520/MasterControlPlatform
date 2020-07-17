@@ -18,12 +18,12 @@ const productRouter = {
       component: () => import('@/views/productmanagement/drugs/index'),
       meta: { title: 'drugs' }
     },
-    // {
-    //   path: 'consumables',
-    //   name: 'Consumables',
-    //   component: () => import('@/views/productmanagement/consumables/index'),
-    //   meta: { title: 'consumables' }
-    // }
+    {
+      path: 'consumables',
+      name: 'Consumables',
+      component: () => import('@/views/productmanagement/consumables/index'),
+      meta: { title: 'consumables' }
+    }
   ]
 }
 

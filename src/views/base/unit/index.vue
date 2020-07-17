@@ -320,6 +320,7 @@ export default {
       _this.dialogFormVisible = false;
       _this.editVisible = false;
       _this.selectOrgVisible = false;
+      _this.selectOrgIDArray=[];
     },
     saveUnit() {
       var _this = this;
@@ -504,7 +505,7 @@ export default {
                 type: "success"
               });
           }
-          _this.selectOrgVisible=false;
+          _this.hideDialog();
           _this.isRepeat = false;
           _this.vloading = false;
         })

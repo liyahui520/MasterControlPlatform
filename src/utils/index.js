@@ -352,7 +352,6 @@ export function removeClass(ele, cls) {
  * @param {Array} config 
  */
 export function getListData(data, config) {
-  console.log("获取到的数据为",data)
   var id = config.id || 'id';
   var pid = config.pid || 'pid';
   var children = config.children || 'children';
@@ -362,7 +361,6 @@ export function getListData(data, config) {
   data.forEach(function (v) {
     idMap[v[id]] = v;
   });
-  console.log("处理一部分数据以后为",idMap)
   data.forEach(function (v) {
     var parent = idMap[v[pid]];
     if (parent) {
@@ -372,7 +370,6 @@ export function getListData(data, config) {
       jsonTree.push(v);
     }
   });
-  console.log("处理完毕以后的数据为",jsonTree)
   return jsonTree;
 }
 

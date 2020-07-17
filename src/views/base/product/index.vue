@@ -353,7 +353,6 @@ export default {
         _this.isRepeat = false;
         return;
       }
-      console.log("生产商传输的机构id为",_this.selectOrgIDArray)
       _this.$store
         .dispatch("product/barchFullProduct", {
           orgIds: _this.selectOrgIDArray
@@ -372,11 +371,23 @@ export default {
               type: "error"
             });
           }
-          _this.selectOrgVisible=false;
+          _this.hideDialog();
           _this.isRepeat = false;
           _this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "下发失败,请稍后重试",
+              type: "error"
+            });
+          }
           _this.loading = false;
         });
     },
@@ -408,7 +419,6 @@ export default {
       ) {
         delete _this.params.params.companyname;
       }
-      console.log("请求的参数为", _this.params);
       _this.$store
         .dispatch("product/getProductList", _this.params)
         .then(res => {
@@ -418,7 +428,19 @@ export default {
           _this.limit = res.data.pageSize;
           _this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "数据加载失败,请稍后重试",
+              type: "error"
+            });
+          }
           _this.loading = false;
         });
     },
@@ -527,6 +549,7 @@ export default {
       _this.supplierDetailVisible = false;
       _this.editSupplierVisible = false;
       _this.selectOrgVisible=false;
+      _this.selectOrgIDArray=[];
     },
     //判断内容是否为空
     isNullOrEmpty(content) {
@@ -749,7 +772,19 @@ export default {
           // _this.isRepeat = false;
           // _this.vloading = false;
         })
-        .catch(() => {
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              showClose: true,
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "下发失败,请稍后重试",
+              type: "error"
+            });
+          }
           // _this.isRepeat = false;
           // _this.vloading = false;
         });
