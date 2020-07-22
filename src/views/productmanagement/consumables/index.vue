@@ -978,7 +978,7 @@ export default {
         mincount: null,
         canorder: true,
         cansell: true,
-        brandid: null,
+        brandid: null
       },
       insertDrugInfo: {},
       productList: [],
@@ -1068,7 +1068,6 @@ export default {
         return;
       }
       _this.vloading = true;
-      console.log("目录下发的时候选择的机构为", _this.selectCateOrgIDArray);
       _this.$store
         .dispatch("hq/psyslistHq", {
           status: 2,
@@ -1076,7 +1075,6 @@ export default {
           isDelete: 1
         })
         .then(res => {
-          console.log("返回的数据为",res)
           if (res.data.code != 200) {
             _this.$message({
               showClose: true,
@@ -1094,8 +1092,7 @@ export default {
           _this.isRepeat = false;
           _this.vloading = false;
         })
-        .catch((err) => {
-          console.log("下发目录",err)
+        .catch(err => {
           if (err.hasOwnProperty("code")) {
             _this.$message({
               showClose: true,
@@ -1210,7 +1207,6 @@ export default {
           type: "warning"
         })
         .then(() => {
-          console.log("点击成功以后的数据为",ids);
           _this.loading = true;
           _this.$store
             .dispatch("commondelete/deleteInfo", {
@@ -1218,7 +1214,6 @@ export default {
               tableType: 0
             })
             .then(res => {
-              console.log("调用删除返回的结果为", res);
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
@@ -1293,7 +1288,7 @@ export default {
         .dispatch("hq/HqPMedicines", {
           orgIds: _this.selectOrgIDArray,
           ids: drugids,
-          drugType:1047
+          drugType: 1047
         })
         .then(res => {
           if (res.data.code == 200) {
@@ -1313,8 +1308,7 @@ export default {
           _this.isRepeat = false;
           _this.orgLoading = false;
         })
-        .catch((err) => {
-          console.log("数据为",err)
+        .catch(err => {
           if (err.hasOwnProperty("code")) {
             _this.$message({
               showClose: true,
@@ -1403,7 +1397,6 @@ export default {
     },
     saveEditDrugsInfo(formName) {
       var _this = this;
-      console.log("编辑的结果为", formName);
       _this.$refs[formName].validate(valid => {
         if (valid) {
           _this.loading = true;
@@ -1413,8 +1406,6 @@ export default {
           _this.editDrugInfo.specificoutmath = _this.editDrugInfo.specificmath;
           _this.editDrugInfo.mincount = _this.editDrugInfo.specificmath;
           _this.editDrugInfo.updatestamp = null;
-
-          console.log("需要提交的对象为", _this.editDrugInfo);
           _this.$store
             .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
             .then(res => {
@@ -1435,7 +1426,19 @@ export default {
               }
               _this.loading = false;
             })
-            .catch(() => {
+            .catch(err => {
+              if (err.hasOwnProperty("code")) {
+                _this.$message({
+                  showClose: true,
+                  message: err.msg,
+                  type: "error"
+                });
+              } else {
+                _this.$message({
+                  message: "数据加载失败，请稍后重试",
+                  type: "error"
+                });
+              }
               _this.loading = false;
             });
         } else {
@@ -1445,7 +1448,6 @@ export default {
     },
     deleteObjectValue(value) {
       var _this = this;
-      console.log("属性值为", value);
       if (_this.editDrugInfo.hasOwnProperty(value)) {
         delete _this.editDrugInfo[value];
       }
@@ -1482,7 +1484,7 @@ export default {
           _this.insertDrugInfo.specificoutmath =
             _this.insertDrugInfo.specificmath;
           _this.insertDrugInfo.mincount = _this.insertDrugInfo.specificmath;
-          _this.insertDrugInfo.categoryname=_this.categoryName;
+          _this.insertDrugInfo.categoryname = _this.categoryName;
           _this.$store
             .dispatch("pmedicines/insertDrugsAPI", _this.insertDrugInfo)
             .then(res => {
@@ -1503,7 +1505,19 @@ export default {
               }
               _this.loading = false;
             })
-            .catch(() => {
+            .catch(err => {
+              if (err.hasOwnProperty("code")) {
+                _this.$message({
+                  showClose: true,
+                  message: err.msg,
+                  type: "error"
+                });
+              } else {
+                _this.$message({
+                  message: "数据加载失败，请稍后重试",
+                  type: "error"
+                });
+              }
               _this.loading = false;
             });
         } else {
@@ -1609,7 +1623,6 @@ export default {
     },
     showEditContent(id) {
       var _this = this;
-      console.log("需要编辑的id为", id);
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
         .then(res => {

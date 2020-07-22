@@ -179,7 +179,7 @@ export default {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
-            .catch(() => {
+            .catch((err) => {
               if (err.hasOwnProperty("code")) {
                 this.$message({
                   message: err.msg,

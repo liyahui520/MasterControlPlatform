@@ -23,6 +23,12 @@ const productRouter = {
       name: 'Consumables',
       component: () => import('@/views/productmanagement/consumables/index'),
       meta: { title: 'consumables' }
+    },
+    {
+      path: 'goods',
+      name: 'Goods',
+      component: () => import('@/views/productmanagement/goods/index'),
+      meta: { title: 'Goods' }
     }
   ]
 }

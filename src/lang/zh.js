@@ -71,7 +71,8 @@ export default {
     Businesstype:'机构管理',
     Product: '生产商',
     Supplier:'供应商',
-    Base: '基础数据'
+    Base: '基础数据',
+    Goods:'商品'
   },
   navbar: {
     dashboard: '首页',

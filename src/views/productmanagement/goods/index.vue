@@ -132,19 +132,19 @@
               <el-table-column
                 prop="instoreprice"
                 :label="$t('pmedicines.InstorePrice')"
-                width="80"
+                width="130"
               >
                 <template slot-scope="scope">{{scope.row.instoreprice | currency('$')}}</template>
               </el-table-column>
               <!-- 会员价 -->
-              <el-table-column prop="memberprice" :label="$t('pmedicines.MemberPrice')" width="80">
+              <el-table-column prop="memberprice" :label="$t('pmedicines.MemberPrice')" width="130">
                 <template slot-scope="scope">{{scope.row.memberprice | currency('$')}}</template>
               </el-table-column>
               <!-- 销售价 -->
               <el-table-column
                 prop="outstoreprice"
                 :label="$t('pmedicines.OutstorePrice')"
-                width="80"
+                width="130"
               >
                 <template slot-scope="scope">{{scope.row.outstoreprice | currency('$')}}</template>
               </el-table-column>
@@ -161,26 +161,12 @@
                 :label="$t('pmedicines.Ingredient')"
                 width="150"
               ></el-table-column>
-              <!-- 投药单位 -->
-              <el-table-column
-                prop="unitname"
-                :show-overflow-tooltip="true"
-                :label="$t('pmedicines.UnitName')"
-                width="80"
-              ></el-table-column>
               <!-- 入库单位 -->
               <el-table-column
                 prop="instoreunitname"
                 :show-overflow-tooltip="true"
                 :label="$t('pmedicines.InstoreUnitName')"
-                width="80"
-              ></el-table-column>
-              <!-- 出库单位 -->
-              <el-table-column
-                prop="outstoreunitname"
-                :show-overflow-tooltip="true"
-                :label="$t('pmedicines.OutstoreUnitName')"
-                width="80"
+                width="100"
               ></el-table-column>
               <!-- 是否打折 -->
               <el-table-column
@@ -197,10 +183,6 @@
                     style="color:red;font-size:18px;"
                   ></i>
                   <i v-else class="iconfont icon-cuohao"></i>
-                  <!-- <el-tag
-                    :type="scope.row.donotdiscount? 'primary' : 'danger'"
-                    disable-transitions
-                  >{{scope.row.donotdiscount?$t('common.yes'):$t('common.no')}}</el-tag>-->
                 </template>
               </el-table-column>
               <!-- 可订 -->
@@ -428,43 +410,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <el-row :gutter="10">
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.DosingWay')">
-              <el-select
-                v-model="editDrugInfo.dosingway"
-                filterable
-                @change="medicateMethodsChange"
-              >
-                <el-option
-                  v-for="(medicateMethods,index) in medicateMethodsList"
-                  :label="medicateMethods.name"
-                  :value="medicateMethods.id"
-                  :key="index"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.ShowAll')">
-              <el-switch v-model="editDrugInfo.showall"></el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.UsingMethod')">
-              <el-select v-model="editDrugInfo.usingmethod" filterable>
-                <el-option
-                  v-for="(usageMethods,index) in usageMethodsList"
-                  :label="usageMethods.name"
-                  :value="usageMethods.id"
-                  :key="index"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.OutstorePrice')" prop="outstoreprice">
@@ -526,7 +471,7 @@
               prop="instoreunit"
               :rules="[{ required: true, message: '请选择出入库单位' }]"
             >
-              <el-select v-model="editDrugInfo.instoreunit" filterable @change="insertUnitChange">
+              <el-select v-model="editDrugInfo.instoreunit" filterable>
                 <el-option
                   v-for="(unit,index) in unitList"
                   :label="unit.name"
@@ -536,34 +481,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :xl="8">
-            <el-form-item
-              :label="$t('pmedicines.Unit')"
-              prop="outstoreunit"
-              :rules="[{ required: true, message: '请选择投药单位' }]"
-            >
-              <el-select v-model="editDrugInfo.unit" filterable @change="outUnitChange">
-                <el-option
-                  v-for="(unit,index) in unitList"
-                  :label="unit.name"
-                  :value="unit.id"
-                  :key="index"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.SpecificInMath')" class="specificInMath">
-              1
-              {{instoreUnitName}}
-              =
-              <el-input type="number" v-model="editDrugInfo.specificmath" />
-              {{outstoreUnitName}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.Specific')">
               <el-input v-model="editDrugInfo.specific" />
@@ -574,7 +491,6 @@
               <el-input disabled v-model="editDrugInfo.count"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :xl="8"></el-col>
         </el-row>
       </el-form>
       <el-form :model="editDrugInfo" :label-width="formLabelWidth">
@@ -691,42 +607,6 @@
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.DosingWay')">
-              <el-select
-                v-model="insertDrugInfo.dosingway"
-                filterable
-                @change="medicateMethodsChange"
-              >
-                <el-option
-                  v-for="(medicateMethods,index) in medicateMethodsList"
-                  :label="medicateMethods.name"
-                  :value="medicateMethods.id"
-                  :key="index"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.ShowAll')">
-              <el-switch v-model="insertDrugInfo.showall"></el-switch>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.UsingMethod')">
-              <el-select v-model="insertDrugInfo.usingmethod" filterable>
-                <el-option
-                  v-for="(usageMethods,index) in usageMethodsList"
-                  :label="usageMethods.name"
-                  :value="usageMethods.id"
-                  :key="index"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
-          <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.OutstorePrice')" prop="outstoreprice">
               <el-input type="number" v-model="insertDrugInfo.outstoreprice" />
             </el-form-item>
@@ -786,7 +666,7 @@
               prop="instoreunit"
               :rules="[{ required: true, message: '请选择出入库单位' }]"
             >
-              <el-select v-model="insertDrugInfo.instoreunit" filterable @change="insertUnitChange">
+              <el-select v-model="insertDrugInfo.instoreunit" filterable>
                 <el-option
                   v-for="(unit,index) in unitList"
                   :label="unit.name"
@@ -796,34 +676,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :xl="8">
-            <el-form-item
-              :label="$t('pmedicines.Unit')"
-              prop="outstoreunit"
-              :rules="[{ required: true, message: '请选择投药单位' }]"
-            >
-              <el-select v-model="insertDrugInfo.unit" filterable @change="outUnitChange">
-                <el-option
-                  v-for="(unit,index) in unitList"
-                  :label="unit.name"
-                  :value="unit.id"
-                  :key="index"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.SpecificInMath')" class="specificInMath">
-              1
-              {{instoreUnitName}}
-              =
-              <el-input type="number" v-model="insertDrugInfo.specificmath" />
-              {{outstoreUnitName}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.Specific')">
               <el-input v-model="insertDrugInfo.specific" />
@@ -834,7 +686,6 @@
               <el-input disabled v-model="insertDrugInfo.count"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :xl="8"></el-col>
         </el-row>
       </el-form>
       <el-form :model="insertDrugInfo" :label-width="formLabelWidth">
@@ -901,18 +752,6 @@
 
         <el-row :gutter="10">
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.DosingWay')">{{drugsDetailInfo.dosingwayname}}</el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.ShowAll')">{{drugsDetailInfo.showall?'是':'否'}}</el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.UsingMethod')">{{drugsDetailInfo.usingmethodname}}</el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
-          <el-col :xl="8">
             <el-form-item
               :label="$t('pmedicines.OutstorePrice')"
             >{{drugsDetailInfo.outstoreprice | currency('$')}}</el-form-item>
@@ -966,27 +805,11 @@
             >{{drugsDetailInfo.instoreunitname}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Unit')">{{drugsDetailInfo.unitname}}</el-form-item>
-          </el-col>
-          <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.SpecificInMath')" class="specificInMath">
-              1
-              {{drugsDetailInfo.instoreunitname}}
-              =
-              {{drugsDetailInfo.specificmath}}
-              {{drugsDetailInfo.unitname}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
-          <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.Specific')">{{drugsDetailInfo.specific}}</el-form-item>
           </el-col>
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.Count')">{{drugsDetailInfo.count}}</el-form-item>
           </el-col>
-          <el-col :xl="8"></el-col>
         </el-row>
       </el-form>
       <el-form :model="drugsDetailInfo" :label-width="formLabelWidth">
@@ -1088,7 +911,7 @@ export default {
         label: "name"
       },
       formLabelWidth: "120px",
-      drugType: 1046,
+      drugType: 1047,
       input: "",
       // 分页参数 Satrt
       total: 0,
@@ -1101,15 +924,15 @@ export default {
         currentPage: 1,
         pageSize: 10,
         params: {
-          drugType: 1046,
+          drugType: 1047,
           deleted: 0,
           canOrder: 1,
           canSell: 1
         }
       },
       tableData: [],
-      categoryId: 1006,
-      categoryName: "药品目录",
+      categoryId: 1001,
+      categoryName: "消耗品目录",
       showTreeVisible: false,
       editDrugVisible: false,
       insertDrugVisible: false,
@@ -1125,8 +948,8 @@ export default {
         }
       },
       insertBaseInfo: {
-        drugtype: 1046,
-        category: 1006,
+        drugtype: 1047,
+        category: 1001,
         barcode: "",
         providerid: null,
         ingredient: "",
@@ -1134,26 +957,21 @@ export default {
         description: "",
         instoreprice: 0,
         outstoreprice: null,
-
         unit: null,
         specific: "",
         count: 0,
-        usingmethod: null,
         englishname: null,
         drugsnameletter: "",
         instoreunit: null,
         deleted: false,
         memberprice: null,
         donotdiscount: true,
-        showall: true,
         itemcode: "",
         brand: null,
         allowsalefornonestock: false,
-        dosingway: null,
         categoryname: "",
         costprice: null,
         commonname: "",
-        specificinmath: 1,
         specificoutmath: 1,
         specificmath: null,
         outstoreunit: null,
@@ -1161,10 +979,6 @@ export default {
         canorder: true,
         cansell: true,
         brandid: null,
-        unitname: null,
-        instoreunitname: null,
-        outstoreunitname: null,
-        dosingwayname: null
       },
       insertDrugInfo: {},
       productList: [],
@@ -1176,10 +990,6 @@ export default {
           isdeleted: 0
         }
       },
-      usageMethodsList: [],
-      medicateMethodsList: [],
-      instoreUnitName: "入库单位",
-      outstoreUnitName: "出库单位",
       rules: {
         outstoreprice: [
           { required: true, message: "请输入销售价" },
@@ -1201,7 +1011,7 @@ export default {
         currentPage: 1,
         pageSize: 100000,
         params: {
-          parentid: 1006,
+          parentid: 1001,
           status: 0,
           deleted: 0
         }
@@ -1222,6 +1032,7 @@ export default {
      * 初始化目录
      */
     _this.GetTreeData();
+
     /**
      * 初始化产品数据
      */
@@ -1232,10 +1043,6 @@ export default {
     _this.loadSupplierList();
     //加载生产商下拉
     _this.loadProductList();
-    //加载投药方式
-    _this.loadMedicateMethods();
-    //加载使用方式
-    _this.loadUsageMethods();
     //加载机构列表
     _this.loadOrgList();
   },
@@ -1261,13 +1068,15 @@ export default {
         return;
       }
       _this.vloading = true;
+      console.log("目录下发的时候选择的机构为", _this.selectCateOrgIDArray);
       _this.$store
         .dispatch("hq/psyslistHq", {
-          status: 1,
+          status: 2,
           orgIds: _this.selectCateOrgIDArray,
           isDelete: 1
         })
         .then(res => {
+          console.log("返回的数据为",res)
           if (res.data.code != 200) {
             _this.$message({
               showClose: true,
@@ -1286,6 +1095,7 @@ export default {
           _this.vloading = false;
         })
         .catch((err) => {
+          console.log("下发目录",err)
           if (err.hasOwnProperty("code")) {
             _this.$message({
               showClose: true,
@@ -1294,7 +1104,7 @@ export default {
             });
           } else {
             _this.$message({
-              message: "数据加载失败，请稍后重试",
+              message: "下发失败",
               type: "error"
             });
           }
@@ -1367,6 +1177,7 @@ export default {
     showCatalogTree() {
       var _this = this;
       _this.showTreeVisible = true;
+      // _this.$refs['insertdrugsinfo'].resetFields();
     },
     append(data) {
       var _this = this;
@@ -1399,6 +1210,8 @@ export default {
           type: "warning"
         })
         .then(() => {
+          console.log("点击成功以后的数据为",ids);
+          _this.loading = true;
           _this.$store
             .dispatch("commondelete/deleteInfo", {
               ids: ids,
@@ -1480,7 +1293,7 @@ export default {
         .dispatch("hq/HqPMedicines", {
           orgIds: _this.selectOrgIDArray,
           ids: drugids,
-          drugType: 1046
+          drugType:1047
         })
         .then(res => {
           if (res.data.code == 200) {
@@ -1500,7 +1313,8 @@ export default {
           _this.isRepeat = false;
           _this.orgLoading = false;
         })
-        .catch(err => {
+        .catch((err) => {
+          console.log("数据为",err)
           if (err.hasOwnProperty("code")) {
             _this.$message({
               showClose: true,
@@ -1589,16 +1403,18 @@ export default {
     },
     saveEditDrugsInfo(formName) {
       var _this = this;
+      console.log("编辑的结果为", formName);
       _this.$refs[formName].validate(valid => {
         if (valid) {
           _this.loading = true;
           _this.editDrugInfo.deleted = _this.editDrugInfo.deleted ? 1 : 0;
           _this.editDrugInfo.canorder = _this.editDrugInfo.canorder ? 1 : 0;
           _this.editDrugInfo.cansell = _this.editDrugInfo.cansell ? 1 : 0;
-          _this.editDrugInfo.specificinmath = 1;
           _this.editDrugInfo.specificoutmath = _this.editDrugInfo.specificmath;
           _this.editDrugInfo.mincount = _this.editDrugInfo.specificmath;
           _this.editDrugInfo.updatestamp = null;
+
+          console.log("需要提交的对象为", _this.editDrugInfo);
           _this.$store
             .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
             .then(res => {
@@ -1619,19 +1435,7 @@ export default {
               }
               _this.loading = false;
             })
-            .catch(err => {
-              if (err.hasOwnProperty("code")) {
-                _this.$message({
-                  showClose: true,
-                  message: err.msg,
-                  type: "error"
-                });
-              } else {
-                _this.$message({
-                  message: "数据加载失败，请稍后重试",
-                  type: "error"
-                });
-              }
+            .catch(() => {
               _this.loading = false;
             });
         } else {
@@ -1641,6 +1445,7 @@ export default {
     },
     deleteObjectValue(value) {
       var _this = this;
+      console.log("属性值为", value);
       if (_this.editDrugInfo.hasOwnProperty(value)) {
         delete _this.editDrugInfo[value];
       }
@@ -1674,14 +1479,13 @@ export default {
           _this.insertDrugInfo.deleted = _this.insertDrugInfo.deleted ? 1 : 0;
           _this.insertDrugInfo.canorder = _this.insertDrugInfo.canorder ? 1 : 0;
           _this.insertDrugInfo.cansell = _this.insertDrugInfo.cansell ? 1 : 0;
-          _this.insertDrugInfo.specificinmath = 1;
           _this.insertDrugInfo.specificoutmath =
             _this.insertDrugInfo.specificmath;
           _this.insertDrugInfo.mincount = _this.insertDrugInfo.specificmath;
+          _this.insertDrugInfo.categoryname=_this.categoryName;
           _this.$store
             .dispatch("pmedicines/insertDrugsAPI", _this.insertDrugInfo)
             .then(res => {
-              console.log("数据上传完成以后的信息为", res);
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
@@ -1699,19 +1503,7 @@ export default {
               }
               _this.loading = false;
             })
-            .catch(err => {
-              if (err.hasOwnProperty("code")) {
-                _this.$message({
-                  showClose: true,
-                  message: err.msg,
-                  type: "error"
-                });
-              } else {
-                _this.$message({
-                  message: "数据加载失败，请稍后重试",
-                  type: "error"
-                });
-              }
+            .catch(() => {
               _this.loading = false;
             });
         } else {
@@ -1724,13 +1516,6 @@ export default {
       _this.insertDrugInfo = _this.insertBaseInfo;
       _this.$refs[formName].resetFields();
       _this.hideDialog();
-    },
-    //投药方式发生改变时
-    medicateMethodsChange(value) {
-      var _this = this;
-      _this.insertDrugInfo.dosingwayname = value
-        ? _this.medicateMethodsList.find(ele => ele.id == value).name
-        : "";
     },
     //生产商发生改变时
     productChange(value) {
@@ -1776,50 +1561,6 @@ export default {
           _this.editDrugInfo.cansell = false;
         }
       }
-    },
-    insertUnitChange(value) {
-      var _this = this;
-      var unitName = value
-        ? _this.unitList.find(ele => ele.id == value).name
-        : "";
-      _this.instoreUnitName = unitName;
-      _this.insertDrugInfo.instoreunitname = unitName;
-      _this.insertDrugInfo.outstoreunit = value;
-      _this.insertDrugInfo.outstoreunitname = unitName;
-    },
-    outUnitChange(value) {
-      var _this = this;
-      var unitName = value
-        ? _this.unitList.find(ele => ele.id == value).name
-        : "";
-      _this.outstoreUnitName = unitName;
-      _this.insertDrugInfo.unitname = unitName;
-    },
-    //加载投药方式
-    loadMedicateMethods() {
-      var _this = this;
-      _this.$store
-        .dispatch("pmedicines/getMedicateMethods", { parentid: 2335 })
-        .then(res => {
-          _this.medicateMethodsList = res.data;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //加载使用方式
-    loadUsageMethods() {
-      var _this = this;
-      _this.$store
-        .dispatch("pmedicines/getUsageMethods", { parentid: 2287 })
-        .then(res => {
-          _this.usageMethodsList = res.data;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
     },
     //加载供应商数据
     loadSupplierList() {
@@ -1868,6 +1609,7 @@ export default {
     },
     showEditContent(id) {
       var _this = this;
+      console.log("需要编辑的id为", id);
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
         .then(res => {
@@ -1876,8 +1618,6 @@ export default {
             _this.editDrugInfo.canorder = res.data[0].canorder == 1;
             _this.editDrugInfo.cansell = res.data[0].cansell == 1;
             _this.editDrugInfo.deleted = res.data[0].deleted == 1;
-            _this.insertUnitChange(_this.editDrugInfo.instoreunit);
-            _this.outUnitChange(_this.editDrugInfo.unit);
             _this.editDrugVisible = true;
           } else {
             _this.$message({
@@ -1917,11 +1657,6 @@ export default {
      * {点击数据} nodeData
      */
     handleClick: function(nodeData) {
-      if (nodeData.id == 1006) {
-        this.categoryId = -1;
-      } else {
-        this.categoryId = nodeData.id;
-      }
       this.categoryId = nodeData.id;
       this.categoryName = nodeData.name;
       this.insertDrugInfo.category = nodeData.id;
@@ -1932,7 +1667,6 @@ export default {
      * 获取Table数据
      */
     GetTableData: function() {
-      var _this = this;
       this.loading = true;
       if (this.categoryId == 1001) {
         this.params.params.category = -1;
@@ -1949,17 +1683,6 @@ export default {
           this.loading = false;
         })
         .catch(() => {
-          if (err.hasOwnProperty("code")) {
-            _this.$message({
-              message: err.msg,
-              type: "error"
-            });
-          } else {
-            _this.$message({
-              message: "数据加载失败，请稍后重试",
-              type: "error"
-            });
-          }
           this.loading = false;
         });
     },
@@ -2015,14 +1738,6 @@ export default {
     }
     .el-tree-node__content {
       height: 30px;
-    }
-  }
-  .el-form {
-    .specificInMath {
-      display: flex;
-      .el-input {
-        width: 85px;
-      }
     }
   }
   .selectOrgClass {
