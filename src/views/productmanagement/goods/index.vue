@@ -148,12 +148,6 @@
               >
                 <template slot-scope="scope">{{scope.row.outstoreprice | currency('$')}}</template>
               </el-table-column>
-              <!-- 库存 -->
-              <el-table-column prop="count" :label="$t('pmedicines.Count')" width="80">
-                <template slot-scope="scope">
-                  <span>{{scope.row.count}}</span>
-                </template>
-              </el-table-column>
               <!-- 成分 -->
               <el-table-column
                 prop="ingredient"
@@ -487,9 +481,6 @@
             </el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Count')">
-              <el-input disabled v-model="editDrugInfo.count"></el-input>
-            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -682,9 +673,6 @@
             </el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Count')">
-              <el-input disabled v-model="insertDrugInfo.count"></el-input>
-            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -808,7 +796,7 @@
             <el-form-item :label="$t('pmedicines.Specific')">{{drugsDetailInfo.specific}}</el-form-item>
           </el-col>
           <el-col :xl="8">
-            <el-form-item :label="$t('pmedicines.Count')">{{drugsDetailInfo.count}}</el-form-item>
+            
           </el-col>
         </el-row>
       </el-form>
@@ -911,7 +899,7 @@ export default {
         label: "name"
       },
       formLabelWidth: "120px",
-      drugType: 1047,
+      drugType: 1048,
       input: "",
       // 分页参数 Satrt
       total: 0,
@@ -924,14 +912,14 @@ export default {
         currentPage: 1,
         pageSize: 10,
         params: {
-          drugType: 1047,
+          drugType: 1048,
           deleted: 0,
           canOrder: 1,
           canSell: 1
         }
       },
       tableData: [],
-      categoryId: 1001,
+      categoryId: 1000,
       categoryName: "消耗品目录",
       showTreeVisible: false,
       editDrugVisible: false,
@@ -948,8 +936,8 @@ export default {
         }
       },
       insertBaseInfo: {
-        drugtype: 1047,
-        category: 1001,
+        drugtype: 1048,
+        category: 1000,
         barcode: "",
         providerid: null,
         ingredient: "",
@@ -959,7 +947,6 @@ export default {
         outstoreprice: null,
         unit: null,
         specific: "",
-        count: 0,
         englishname: null,
         drugsnameletter: "",
         instoreunit: null,
@@ -1011,7 +998,7 @@ export default {
         currentPage: 1,
         pageSize: 100000,
         params: {
-          parentid: 1001,
+          parentid: 1000,
           status: 0,
           deleted: 0
         }
@@ -1071,7 +1058,7 @@ export default {
       console.log("目录下发的时候选择的机构为", _this.selectCateOrgIDArray);
       _this.$store
         .dispatch("hq/psyslistHq", {
-          status: 2,
+          status: 3,
           orgIds: _this.selectCateOrgIDArray,
           isDelete: 1
         })
@@ -1293,7 +1280,7 @@ export default {
         .dispatch("hq/HqPMedicines", {
           orgIds: _this.selectOrgIDArray,
           ids: drugids,
-          drugType:1047
+          drugType:1048
         })
         .then(res => {
           if (res.data.code == 200) {
@@ -1641,6 +1628,7 @@ export default {
           drugType: _this.drugType
         })
         .then(res => {
+          
           _this.data = res;
           if (_this.data.length > 0) {
             _this.data.forEach(function(info) {
@@ -1668,7 +1656,7 @@ export default {
      */
     GetTableData: function() {
       this.loading = true;
-      if (this.categoryId == 1001) {
+      if (this.categoryId == 1000) {
         this.params.params.category = -1;
       } else {
         this.params.params.category = this.categoryId;

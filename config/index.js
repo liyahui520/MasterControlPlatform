@@ -14,6 +14,7 @@ module.exports = {
       '/api': {
         target: 'http://localhost:9988/',
         // target: 'http://testdataapi.warmsoft.com:9988',
+        // target: 'http://47.114.108.169:8080/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

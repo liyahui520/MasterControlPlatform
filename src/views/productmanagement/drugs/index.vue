@@ -973,7 +973,7 @@
               1
               {{drugsDetailInfo.instoreunitname}}
               =
-              {{drugsDetailInfo.specificmath}}
+              {{drugsDetailInfo.specificoutmath}}
               {{drugsDetailInfo.unitname}}
             </el-form-item>
           </el-col>
@@ -1871,11 +1871,13 @@ export default {
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
         .then(res => {
+          console.log("获取到的数据为",res);
           if (res.code == 200 && res.data.length > 0) {
             _this.editDrugInfo = res.data[0];
             _this.editDrugInfo.canorder = res.data[0].canorder == 1;
             _this.editDrugInfo.cansell = res.data[0].cansell == 1;
             _this.editDrugInfo.deleted = res.data[0].deleted == 1;
+            _this.editDrugInfo.specificmath= res.data[0].specificoutmath;
             _this.insertUnitChange(_this.editDrugInfo.instoreunit);
             _this.outUnitChange(_this.editDrugInfo.unit);
             _this.editDrugVisible = true;
