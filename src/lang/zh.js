@@ -72,7 +72,8 @@ export default {
     Product: '生产商',
     Supplier:'供应商',
     Base: '基础数据',
-    Goods:'商品'
+    Goods:'商品',
+    Stock:'库存'
   },
   navbar: {
     dashboard: '首页',

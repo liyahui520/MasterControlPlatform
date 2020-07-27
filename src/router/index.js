@@ -16,6 +16,8 @@ import baseRouter from './modules/base'
 
 import orgRouter from './modules/org'
 
+import stockRouter from './modules/stock'
+
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -149,6 +151,7 @@ export const asyncRoutes = [
   productRouter,
   baseRouter,
   orgRouter,
+  stockRouter,
   // {
   //   path: '/permission',
   //   component: Layout,
