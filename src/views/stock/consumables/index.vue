@@ -387,6 +387,7 @@ export default {
           deleted: 0,
           canOrder: 1,
           canSell: 1,
+          orgIds: [],
         },
       },
       tableData: [],
@@ -634,7 +635,7 @@ export default {
         this.params.params.category = this.categoryId;
       }
       this.$store
-        .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
+        .dispatch("pmedicines/getPmedicinesByDrugTypeAndOrg", this.params)
         .then((res) => {
           this.tableData = res.list;
           this.total = res.total;

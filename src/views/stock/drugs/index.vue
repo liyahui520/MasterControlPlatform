@@ -11,7 +11,7 @@
             <el-form :inline="true" :model="params.params" class="demo-form-inline">
               <el-form-item :label="$t('unit.OrgName')">
                 <el-select
-                  v-model="selectCateOrgIDArray"
+                  v-model="params.params.orgIds"
                   multiple
                   collapse-tags
                   style="margin-left: 20px;"
@@ -281,6 +281,7 @@ export default {
           deleted: 0,
           canOrder: 1,
           canSell: 1,
+          orgIds: [],
         },
       },
       tableData: [],
@@ -566,7 +567,7 @@ export default {
         this.params.params.category = this.categoryId;
       }
       this.$store
-        .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
+        .dispatch("pmedicines/getPmedicinesByDrugTypeAndOrg", this.params)
         .then((res) => {
           this.tableData = res.list;
           this.total = res.total;
@@ -574,7 +575,7 @@ export default {
           this.limit = res.pageSize;
           this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
           if (err.hasOwnProperty("code")) {
             _this.$message({
               message: err.msg,

@@ -34,7 +34,13 @@ export function getPmedicinesByDrugType(data) {
     data
   })
 }
-
+export function getPmedicinesByDrugTypeAndOrg(data) {
+  return request({
+    url: '/Pmedicineds/getPmedicinesByDrugTypeAndOrg',
+    method: 'post',
+    data
+  })
+}
 //获取药品详细信息
 export function getPmedicinesInfo(data) {
   return request({

@@ -10,7 +10,7 @@
           <el-header style="height:100%">
             <el-form :inline="true" :model="params.params" class="demo-form-inline">
               <el-form-item :label="$t('unit.OrgName')">
-                <el-select v-model="selectCateOrgIDArray" multiple collapse-tags style="margin-left: 20px;">
+                <el-select v-model="params.params.orgIds" multiple collapse-tags style="margin-left: 20px;">
                   <el-option
                     v-for="(orgInfo,index) in orgList"
                     :label="orgInfo.orgname"
@@ -398,6 +398,7 @@ export default {
           deleted: 0,
           canOrder: 1,
           canSell: 1,
+          orgIds: [],
         },
       },
       tableData: [],
@@ -589,8 +590,9 @@ export default {
       } else {
         this.params.params.category = this.categoryId;
       }
+      console.log("传输的参数为this.params",this.params)
       this.$store
-        .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
+        .dispatch("pmedicines/getPmedicinesByDrugTypeAndOrg", this.params)
         .then((res) => {
           this.tableData = res.list;
           this.total = res.total;

@@ -1,4 +1,4 @@
-import { getPmedicinesByDrugType,getPmedicinesInfo,getUsageMethods,getMedicateMethods,insertDrugsAPI,updateDrugsAPI } from '@/api/pmedicines' 
+import { getPmedicinesByDrugType,getPmedicinesInfo,getUsageMethods,getMedicateMethods,insertDrugsAPI,updateDrugsAPI,getPmedicinesByDrugTypeAndOrg } from '@/api/pmedicines' 
 import { getUnitList } from '@/api/unit'
 
 
@@ -13,6 +13,16 @@ const actions = {
   getPmedicinesByDrugType({ commit  },params) {
     return new Promise((resolve, reject) => { 
       getPmedicinesByDrugType(params).then(response => {
+        const { data } = response   
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  getPmedicinesByDrugTypeAndOrg({ commit  },params) {
+    return new Promise((resolve, reject) => { 
+      getPmedicinesByDrugTypeAndOrg(params).then(response => {
         const { data } = response   
         resolve(data)
       }).catch(error => {
