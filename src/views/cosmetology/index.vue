@@ -732,7 +732,7 @@ export default {
         label: "name"
       },
       formLabelWidth: "120px",
-      drugType: 2801,
+      drugType: 2285,
       input: "",
       // 分页参数 Satrt
       total: 0,
@@ -745,14 +745,14 @@ export default {
         currentPage: 1,
         pageSize: 10,
         params: {
-          drugType: 2801,
+          drugType: 2285,
           deleted: 0,
           canOrder: 1,
           canSell: 1
         }
       },
       tableData: [],
-      categoryId: 1010,
+      categoryId: 1004,
       categoryName: "美容目录",
       showTreeVisible: false,
       editDrugVisible: false,
@@ -769,8 +769,8 @@ export default {
         }
       },
       insertBaseInfo: {
-        drugtype: 2801,
-        category: 1010,
+        drugtype: 2285,
+        category: 1004,
         barcode: "",
         drugsName: "",
         description: "",
@@ -812,7 +812,7 @@ export default {
         currentPage: 1,
         pageSize: 100000,
         params: {
-          parentid: 1010,
+          parentid: 1004,
           status: 0,
           deleted: 0
         }
@@ -1090,7 +1090,7 @@ export default {
         .dispatch("hq/HqPMedicines", {
           orgIds: _this.selectOrgIDArray,
           ids: drugids,
-          drugType:2801
+          drugType:2285
         })
         .then(res => {
           if (res.data.code == 200) {
@@ -1428,7 +1428,7 @@ export default {
      */
     GetTableData: function() {
       this.loading = true;
-      if (this.categoryId == 1010) {
+      if (this.categoryId == 1004) {
         this.params.params.category = -1;
       } else {
         this.params.params.category = this.categoryId;

@@ -414,15 +414,6 @@ export default {
           deleted: 0,
         },
       },
-      productList: [],
-      supplierList: [],
-      supplierParams: {
-        currentPage: 1,
-        pageSize: 10000,
-        params: {
-          isdeleted: 0,
-        },
-      },
       showDrugsDetailInfo: false,
       //药品详情信息
       drugsDetailInfo: {},
@@ -455,19 +446,15 @@ export default {
      * 初始化目录
      */
     _this.GetTreeData();
-
+    //加载单位下拉
+    _this.loadUnitList();
+    //加载机构列表
+    _this.loadOrgList();
     /**
      * 初始化产品数据
      */
     _this.GetTableData();
-    //加载单位下拉
-    _this.loadUnitList();
-    //加载供应商下拉
-    _this.loadSupplierList();
-    //加载生产商下拉
-    _this.loadProductList();
-    //加载机构列表
-    _this.loadOrgList();
+
   },
   methods: {
     //是否停用
@@ -520,40 +507,6 @@ export default {
               type: "error",
             });
           }
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //生产商发生改变时
-    productChange(value) {
-      var _this = this;
-      _this.insertDrugInfo.brand = value
-        ? _this.productList.find((ele) => ele.id == value).companyname
-        : "";
-    },
-
-    //加载供应商数据
-    loadSupplierList() {
-      var _this = this;
-      _this.$store
-        .dispatch("supplier/getSupplierList", _this.supplierParams)
-        .then((res) => {
-          _this.supplierList = res.data.list;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //加载生产商数据
-    loadProductList() {
-      var _this = this;
-      _this.$store
-        .dispatch("product/getProductList", _this.supplierParams)
-        .then((res) => {
-          _this.productList = res.data.list;
-          _this.loading = false;
         })
         .catch(() => {
           _this.loading = false;
@@ -641,6 +594,7 @@ export default {
       } else {
         this.params.params.category = this.categoryId;
       }
+            console.log("第一次加载数据时传递的参数为",this.params)
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugTypeAndOrg", this.params)
         .then((res) => {

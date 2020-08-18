@@ -308,17 +308,7 @@ export default {
           deleted: 0,
         },
       },
-      productList: [],
-      supplierList: [],
-      supplierParams: {
-        currentPage: 1,
-        pageSize: 10000,
-        params: {
-          isdeleted: 0,
-        },
-      },
       usageMethodsList: [],
-      medicateMethodsList: [],
       instoreUnitName: "入库单位",
       outstoreUnitName: "出库单位",
       showDrugsDetailInfo: false,
@@ -358,14 +348,6 @@ export default {
     _this.GetTableData();
     //加载单位下拉
     _this.loadUnitList();
-    //加载供应商下拉
-    _this.loadSupplierList();
-    //加载生产商下拉
-    _this.loadProductList();
-    //加载投药方式
-    _this.loadMedicateMethods();
-    //加载使用方式
-    _this.loadUsageMethods();
     //加载机构列表
     _this.loadOrgList();
   },
@@ -429,20 +411,6 @@ export default {
           _this.loading = false;
         });
     },
-    //投药方式发生改变时
-    medicateMethodsChange(value) {
-      var _this = this;
-      _this.insertDrugInfo.dosingwayname = value
-        ? _this.medicateMethodsList.find((ele) => ele.id == value).name
-        : "";
-    },
-    //生产商发生改变时
-    productChange(value) {
-      var _this = this;
-      _this.insertDrugInfo.brand = value
-        ? _this.productList.find((ele) => ele.id == value).companyname
-        : "";
-    },
     insertUnitChange(value) {
       var _this = this;
       var unitName = value
@@ -460,58 +428,6 @@ export default {
         : "";
       _this.outstoreUnitName = unitName;
       _this.insertDrugInfo.unitname = unitName;
-    },
-    //加载投药方式
-    loadMedicateMethods() {
-      var _this = this;
-      _this.$store
-        .dispatch("pmedicines/getMedicateMethods", { parentid: 2335 })
-        .then((res) => {
-          _this.medicateMethodsList = res.data;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //加载使用方式
-    loadUsageMethods() {
-      var _this = this;
-      _this.$store
-        .dispatch("pmedicines/getUsageMethods", { parentid: 2287 })
-        .then((res) => {
-          _this.usageMethodsList = res.data;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //加载供应商数据
-    loadSupplierList() {
-      var _this = this;
-      _this.$store
-        .dispatch("supplier/getSupplierList", _this.supplierParams)
-        .then((res) => {
-          _this.supplierList = res.data.list;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //加载生产商数据
-    loadProductList() {
-      var _this = this;
-      _this.$store
-        .dispatch("product/getProductList", _this.supplierParams)
-        .then((res) => {
-          _this.productList = res.data.list;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
     },
     showAddDrug() {
       var _this = this;
@@ -568,7 +484,7 @@ export default {
     GetTableData: function () {
       var _this = this;
       this.loading = true;
-      if (this.categoryId == 1001) {
+      if (this.categoryId == 1006) {
         this.params.params.category = -1;
       } else {
         this.params.params.category = this.categoryId;
@@ -576,7 +492,6 @@ export default {
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugTypeAndOrg", this.params)
         .then((res) => {
-          console.log("返回的数据为",res.list)
           this.tableData = res.list;
           this.total = res.total;
           this.page = res.pageNum;

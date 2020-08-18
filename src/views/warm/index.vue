@@ -760,7 +760,7 @@ export default {
         }
       },
       tableData: [],
-      categoryId: 1004,
+      categoryId: 19205,
       categoryName: "洗澡目录",
       showTreeVisible: false,
       editDrugVisible: false,
@@ -778,7 +778,7 @@ export default {
       },
       insertBaseInfo: {
         drugtype: 2801,
-        category: 1004,
+        category: 19205,
         barcode: "",
         drugsName: "",
         description: "",
@@ -799,15 +799,6 @@ export default {
         cansell: true,
       },
       insertDrugInfo: {},
-      productList: [],
-      supplierList: [],
-      supplierParams: {
-        currentPage: 1,
-        pageSize: 10000,
-        params: {
-          isdeleted: 0
-        }
-      },
       rules: {
         outstoreprice: [
           { required: true, message: "请输入销售价" },
@@ -829,7 +820,7 @@ export default {
         currentPage: 1,
         pageSize: 100000,
         params: {
-          parentid: 1004,
+          parentid: 19205,
           status: 0,
           deleted: 0
         }
@@ -1443,23 +1434,37 @@ export default {
      * 获取Table数据
      */
     GetTableData: function() {
-      this.loading = true;
-      if (this.categoryId == 1004) {
-        this.params.params.category = -1;
+      var _this=this;
+      _this.loading = true;
+      if (_this.categoryId == 19205) {
+        _this.params.params.category = -1;
       } else {
-        this.params.params.category = this.categoryId;
+        _this.params.params.category = _this.categoryId;
       }
-      this.$store
-        .dispatch("pmedicines/getPmedicinesByDrugType", this.params)
+      console.log("请求数据时",_this.params)
+      _this.$store
+        .dispatch("pmedicines/getPmedicinesByDrugType", _this.params)
         .then(res => {
-          this.tableData = res.list;
-          this.total = res.total;
-          this.page = res.pageNum;
-          this.limit = res.pageSize;
-          this.loading = false;
+          console.log("接收的数据为",res.list)
+          _this.tableData = res.list;
+          _this.total = res.total;
+          _this.page = res.pageNum;
+          _this.limit = res.pageSize;
+          _this.loading = false;
         })
-        .catch(() => {
-          this.loading = false;
+        .catch((err) => {
+          if (err.hasOwnProperty("code")) {
+            _this.$message({
+              message: err.msg,
+              type: "error"
+            });
+          } else {
+            _this.$message({
+              message: "数据加载失败，请稍后重试",
+              type: "error"
+            });
+          }
+          _this.loading = false;
         });
     },
     /**

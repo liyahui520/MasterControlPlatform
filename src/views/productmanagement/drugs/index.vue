@@ -1936,7 +1936,7 @@ export default {
     GetTableData: function() {
       var _this = this;
       this.loading = true;
-      if (this.categoryId == 1001) {
+      if (this.categoryId == 1006) {
         this.params.params.category = -1;
       } else {
         this.params.params.category = this.categoryId;
@@ -1950,7 +1950,7 @@ export default {
           this.limit = res.pageSize;
           this.loading = false;
         })
-        .catch(() => {
+        .catch((err) => {
           if (err.hasOwnProperty("code")) {
             _this.$message({
               message: err.msg,

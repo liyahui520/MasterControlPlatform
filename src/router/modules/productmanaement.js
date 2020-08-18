@@ -30,6 +30,19 @@ const productRouter = {
       component: () => import('@/views/productmanagement/goods/index'),
       meta: { title: 'Goods' }
     }
+    ,
+    {
+      path: 'warm',
+      name: 'Warm',
+      component: () => import('@/views/warm/index'),
+      meta: { title: 'Warm' }
+    },
+    {
+      path: 'cosmetology',
+      name: 'Cosmetology',
+      component: () => import('@/views/cosmetology/index'),
+      meta: { title: 'Cosmetology' }
+    }
   ]
 }
 

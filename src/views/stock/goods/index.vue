@@ -455,10 +455,6 @@ export default {
     _this.GetTableData();
     //加载单位下拉
     _this.loadUnitList();
-    //加载供应商下拉
-    _this.loadSupplierList();
-    //加载生产商下拉
-    _this.loadProductList();
     //加载机构列表
     _this.loadOrgList();
   },
@@ -506,39 +502,6 @@ export default {
               type: "error",
             });
           }
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //生产商发生改变时
-    productChange(value) {
-      var _this = this;
-      _this.insertDrugInfo.brand = value
-        ? _this.productList.find((ele) => ele.id == value).companyname
-        : "";
-    },
-    //加载供应商数据
-    loadSupplierList() {
-      var _this = this;
-      _this.$store
-        .dispatch("supplier/getSupplierList", _this.supplierParams)
-        .then((res) => {
-          _this.supplierList = res.data.list;
-          _this.loading = false;
-        })
-        .catch(() => {
-          _this.loading = false;
-        });
-    },
-    //加载生产商数据
-    loadProductList() {
-      var _this = this;
-      _this.$store
-        .dispatch("product/getProductList", _this.supplierParams)
-        .then((res) => {
-          _this.productList = res.data.list;
-          _this.loading = false;
         })
         .catch(() => {
           _this.loading = false;
@@ -597,7 +560,6 @@ export default {
       } else {
         this.params.params.category = this.categoryId;
       }
-      console.log("传输的参数为this.params",this.params)
       this.$store
         .dispatch("pmedicines/getPmedicinesByDrugTypeAndOrg", this.params)
         .then((res) => {
