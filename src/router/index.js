@@ -18,6 +18,9 @@ import orgRouter from './modules/org'
 
 import stockRouter from './modules/stock'
 
+import warmRouter from './modules/warm'
+
+import cosRouter from './modules/cosmetology'
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -152,6 +155,8 @@ export const asyncRoutes = [
   baseRouter,
   orgRouter,
   stockRouter,
+  warmRouter,
+  cosRouter,
   // {
   //   path: '/permission',
   //   component: Layout,

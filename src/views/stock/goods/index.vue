@@ -65,6 +65,13 @@
               ref="drugsTable"
             >
               <el-table-column type="selection" align="center" width="55"></el-table-column>
+                             <!-- 机构名称 -->
+              <el-table-column
+                prop="orgname"
+                fixed="left"
+                :label="$t('unit.OrgName')"
+                width="300"
+              ></el-table-column>
               <!-- 产品编码 -->
               <el-table-column
                 prop="itemcode"

@@ -11,7 +11,7 @@
             <el-form :inline="true" :model="params.params" class="demo-form-inline">
               <el-form-item :label="$t('unit.OrgName')">
                 <el-select
-                  v-model="selectCateOrgIDArray"
+                  v-model="params.params.orgIds"
                   multiple
                   collapse-tags
                   style="margin-left: 20px;"
@@ -70,6 +70,13 @@
               ref="drugsTable"
             >
               <el-table-column type="selection" align="center" width="55"></el-table-column>
+                             <!-- 机构名称 -->
+              <el-table-column
+                prop="orgname"
+                fixed="left"
+                :label="$t('unit.OrgName')"
+                width="300"
+              ></el-table-column>
               <!-- 产品编码 -->
               <el-table-column
                 prop="itemcode"

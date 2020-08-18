@@ -73,7 +73,9 @@ export default {
     Supplier:'供应商',
     Base: '基础数据',
     Goods:'商品',
-    Stock:'库存'
+    Stock:'库存',
+    Warm:'洗澡',
+    Cosmetology:'美容'
   },
   navbar: {
     dashboard: '首页',
