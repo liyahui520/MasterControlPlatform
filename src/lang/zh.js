@@ -240,7 +240,7 @@ export default {
     AddDrug:'新增药品',
     SpecificInMath:'产品规格换算',
     Remark:'备注',
-    Unit:'投药单位',
+    Unit:'单位',
     DrugDetail:'药品详情'
   },
   common: {

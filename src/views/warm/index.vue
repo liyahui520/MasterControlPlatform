@@ -142,9 +142,9 @@
               </el-table-column>
               <!-- 入库单位 -->
               <el-table-column
-                prop="instoreunitname"
+                prop="unit"
                 :show-overflow-tooltip="true"
-                :label="$t('pmedicines.InstoreUnitName')"
+                :label="$t('pmedicines.Unit')"
                 width="100"
               ></el-table-column>
               <!-- 是否打折 -->
@@ -347,7 +347,7 @@
               <el-input v-model="editDrugInfo.englishname" />
             </el-form-item>
           </el-col>
-                    <el-col :xl="8">
+          <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CommonName')">
               <el-input v-model="editDrugInfo.commonname" />
             </el-form-item>
@@ -393,11 +393,11 @@
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item
-              :label="$t('pmedicines.InstoreUnitName')"
-              prop="instoreunit"
-              :rules="[{ required: true, message: '请选择出入库单位' }]"
+              :label="$t('pmedicines.Unit')"
+              prop="outstoreunit"
+              :rules="[{ required: true, message: '请选择投药单位' }]"
             >
-              <el-select v-model="editDrugInfo.instoreunit" filterable>
+              <el-select v-model="editDrugInfo.unit" filterable @change="outUnitChange">
                 <el-option
                   v-for="(unit,index) in unitList"
                   :label="unit.name"
@@ -407,8 +407,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :xl="8">
-          </el-col>
+          <el-col :xl="8"></el-col>
         </el-row>
       </el-form>
       <el-form :model="editDrugInfo" :label-width="formLabelWidth">
@@ -526,11 +525,11 @@
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item
-              :label="$t('pmedicines.InstoreUnitName')"
-              prop="instoreunit"
-              :rules="[{ required: true, message: '请选择出入库单位' }]"
+              :label="$t('pmedicines.Unit')"
+              prop="outstoreunit"
+              :rules="[{ required: true, message: '请选择投药单位' }]"
             >
-              <el-select v-model="insertDrugInfo.instoreunit" filterable>
+              <el-select v-model="editDrugInfo.unit" filterable @change="outUnitChange">
                 <el-option
                   v-for="(unit,index) in unitList"
                   :label="unit.name"
@@ -540,8 +539,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :xl="8">
-          </el-col>
+          <el-col :xl="8"></el-col>
         </el-row>
       </el-form>
       <el-form :model="insertDrugInfo" :label-width="formLabelWidth">
@@ -589,9 +587,6 @@
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.EnglishName')">{{drugsDetailInfo.englishname}}</el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item :label="$t('pmedicines.CommonName')">{{drugsDetailInfo.commonname}}</el-form-item>
           </el-col>
@@ -608,15 +603,13 @@
               :label="$t('pmedicines.MemberPrice')"
             >{{drugsDetailInfo.memberprice| currency('$')}}</el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row :gutter="10">
-          <el-col :xl="8">
+                    <el-col :xl="8">
             <el-form-item
               :label="$t('pmedicines.DoNotDiscount')"
             >{{drugsDetailInfo.donotdiscount?'是':'否'}}</el-form-item>
           </el-col>
         </el-row>
+
 
         <el-row :gutter="10">
           <el-col :xl="8">
@@ -633,12 +626,10 @@
         <el-row :gutter="10">
           <el-col :xl="8">
             <el-form-item
-              :label="$t('pmedicines.InstoreUnitName')"
-            >{{drugsDetailInfo.instoreunitname}}</el-form-item>
+              :label="$t('pmedicines.Unit')"
+            >{{drugsDetailInfo.unitname}}</el-form-item>
           </el-col>
-          <el-col :xl="8">
-            
-          </el-col>
+          <el-col :xl="8"></el-col>
         </el-row>
       </el-form>
       <el-form :model="drugsDetailInfo" :label-width="formLabelWidth">
@@ -737,7 +728,7 @@ export default {
       data: [],
       defaultProps: {
         children: "children",
-        label: "name"
+        label: "name",
       },
       formLabelWidth: "120px",
       drugType: 2801,
@@ -756,8 +747,8 @@ export default {
           drugType: 2801,
           deleted: 0,
           canOrder: 1,
-          canSell: 1
-        }
+          canSell: 1,
+        },
       },
       tableData: [],
       categoryId: 19205,
@@ -773,8 +764,8 @@ export default {
         params: {
           parentid: 4355,
           status: 0,
-          deleted: 0
-        }
+          deleted: 0,
+        },
       },
       insertBaseInfo: {
         drugtype: 2801,
@@ -802,12 +793,12 @@ export default {
       rules: {
         outstoreprice: [
           { required: true, message: "请输入销售价" },
-          { validator: validateInsertPrice, trigger: "blur" }
+          { validator: validateInsertPrice, trigger: "blur" },
         ],
         memberprice: [
           { required: true, message: "请输入会员价" },
-          { validator: validateOutPricePrice, trigger: "blur" }
-        ]
+          { validator: validateOutPricePrice, trigger: "blur" },
+        ],
       },
       showDrugsDetailInfo: false,
       //药品详情信息
@@ -822,8 +813,8 @@ export default {
         params: {
           parentid: 19205,
           status: 0,
-          deleted: 0
-        }
+          deleted: 0,
+        },
       },
       dialogFormVisible: false,
       cateParentid: null,
@@ -831,7 +822,7 @@ export default {
       visible: false,
       selectCateOrgVisible: false,
       vloading: false,
-      selectCateOrgIDArray: []
+      selectCateOrgIDArray: [],
     };
   },
   created() {
@@ -867,7 +858,7 @@ export default {
         _this.$message({
           showClose: true,
           message: "请选择机构名称",
-          type: "error"
+          type: "error",
         });
         _this.isRepeat = false;
         return;
@@ -878,21 +869,21 @@ export default {
         .dispatch("hq/psyslistHq", {
           status: 3,
           orgIds: _this.selectCateOrgIDArray,
-          isDelete: 1
+          isDelete: 1,
         })
-        .then(res => {
-          console.log("返回的数据为",res)
+        .then((res) => {
+          console.log("返回的数据为", res);
           if (res.data.code != 200) {
             _this.$message({
               showClose: true,
               message: res.data.message,
-              type: "error"
+              type: "error",
             });
           } else {
             _this.$message({
               showClose: true,
               message: "执行成功",
-              type: "success"
+              type: "success",
             });
           }
           _this.selectCateOrgVisible = false;
@@ -900,17 +891,17 @@ export default {
           _this.vloading = false;
         })
         .catch((err) => {
-          console.log("下发目录",err)
+          console.log("下发目录", err);
           if (err.hasOwnProperty("code")) {
             _this.$message({
               showClose: true,
               message: err.msg,
-              type: "error"
+              type: "error",
             });
           } else {
             _this.$message({
               message: "下发失败",
-              type: "error"
+              type: "error",
             });
           }
           _this.selectCateOrgVisible = false;
@@ -939,7 +930,7 @@ export default {
         _this.$message({
           showClose: true,
           message: "请填写目录名称",
-          type: "error"
+          type: "error",
         });
         _this.isRepeat = false;
         return;
@@ -951,14 +942,14 @@ export default {
           parentid: _this.cateParentid,
           deleted: 0,
           englishname: englishname,
-          status: 0
+          status: 0,
         })
-        .then(res => {
+        .then((res) => {
           if (res.code == 200) {
             _this.$message({
               showClose: true,
               type: "success",
-              message: "添加成功"
+              message: "添加成功",
             });
             _this.catename = "";
             _this.dialogFormVisible = false;
@@ -967,7 +958,7 @@ export default {
             _this.$message({
               showClose: true,
               message: res.msg,
-              type: "error"
+              type: "error",
             });
           }
           _this.isRepeat = false;
@@ -1002,7 +993,7 @@ export default {
         _this.$message({
           showClose: true,
           message: "非子节点不可删除",
-          type: "error"
+          type: "error",
         });
         return;
       }
@@ -1012,30 +1003,30 @@ export default {
         .$confirm("确认要删除吗?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         })
         .then(() => {
-          console.log("点击成功以后的数据为",ids);
+          console.log("点击成功以后的数据为", ids);
           _this.loading = true;
           _this.$store
             .dispatch("commondelete/deleteInfo", {
               ids: ids,
-              tableType: 0
+              tableType: 0,
             })
-            .then(res => {
+            .then((res) => {
               console.log("调用删除返回的结果为", res);
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
                   type: "success",
-                  message: "删除成功"
+                  message: "删除成功",
                 });
                 _this.GetTreeData();
               } else {
                 _this.$message({
                   showClose: true,
                   message: res.msg,
-                  type: "error"
+                  type: "error",
                 });
               }
               _this.isRepeat = false;
@@ -1057,7 +1048,7 @@ export default {
       var _this = this;
       _this.$store
         .dispatch("org/selectBranIdByOrgId")
-        .then(res => {
+        .then((res) => {
           _this.orgList = res;
         })
         .catch(() => {
@@ -1067,7 +1058,7 @@ export default {
     //批量下发
     fullUnit() {
       var _this = this;
-      var drugids = _this.$refs.drugsTable.selection.map(function(info) {
+      var drugids = _this.$refs.drugsTable.selection.map(function (info) {
         return info.id;
       });
       if (_this.isRepeat) {
@@ -1077,7 +1068,7 @@ export default {
         _this.$message({
           showClose: true,
           message: "请选择要下发的产品数据",
-          type: "error"
+          type: "error",
         });
         _this.isRepeat = false;
         return;
@@ -1088,7 +1079,7 @@ export default {
         _this.$message({
           showClose: true,
           message: "请选择机构名称",
-          type: "error"
+          type: "error",
         });
         _this.isRepeat = false;
         return;
@@ -1098,38 +1089,38 @@ export default {
         .dispatch("hq/HqPMedicines", {
           orgIds: _this.selectOrgIDArray,
           ids: drugids,
-          drugType:2801
+          drugType: 2801,
         })
-        .then(res => {
+        .then((res) => {
           if (res.data.code == 200) {
             _this.$message({
               showClose: true,
               message: "执行成功",
-              type: "success"
+              type: "success",
             });
             _this.selectOrgVisible = false;
           } else {
             _this.$message({
               showClose: true,
               message: res.data.message,
-              type: "error"
+              type: "error",
             });
           }
           _this.isRepeat = false;
           _this.orgLoading = false;
         })
         .catch((err) => {
-          console.log("数据为",err)
+          console.log("数据为", err);
           if (err.hasOwnProperty("code")) {
             _this.$message({
               showClose: true,
               message: err.msg,
-              type: "error"
+              type: "error",
             });
           } else {
             _this.$message({
               message: "数据加载失败，请稍后重试",
-              type: "error"
+              type: "error",
             });
           }
           _this.isRepeat = false;
@@ -1139,14 +1130,14 @@ export default {
     //批量删除药品信息
     batchDeleteDrugsInfo() {
       var _this = this;
-      var ids = _this.$refs.drugsTable.selection.map(function(info) {
+      var ids = _this.$refs.drugsTable.selection.map(function (info) {
         return info.id;
       });
       if (ids.length <= 0) {
         _this.$message({
           showClose: true,
           message: "请至少选择一行药品信息",
-          type: "error"
+          type: "error",
         });
         return;
       }
@@ -1154,7 +1145,7 @@ export default {
         .$confirm("确认要删除吗?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         })
         .then(() => {
           _this.deleteDrugsInfo(ids);
@@ -1169,7 +1160,7 @@ export default {
         .$confirm("确认要删除吗?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          type: "warning"
+          type: "warning",
         })
         .then(() => {
           _this.deleteDrugsInfo(ids);
@@ -1181,21 +1172,21 @@ export default {
       _this.$store
         .dispatch("commondelete/deleteInfo", {
           ids: ids,
-          tableType: 3
+          tableType: 3,
         })
-        .then(res => {
+        .then((res) => {
           if (res.code == 200) {
             _this.$message({
               showClose: true,
               type: "success",
-              message: "删除成功"
+              message: "删除成功",
             });
             _this.GetTableData();
           } else {
             _this.$message({
               showClose: true,
               message: res.msg,
-              type: "error"
+              type: "error",
             });
           }
           _this.isRepeat = false;
@@ -1209,7 +1200,7 @@ export default {
     saveEditDrugsInfo(formName) {
       var _this = this;
       console.log("编辑的结果为", formName);
-      _this.$refs[formName].validate(valid => {
+      _this.$refs[formName].validate((valid) => {
         if (valid) {
           _this.loading = true;
           _this.editDrugInfo.deleted = _this.editDrugInfo.deleted ? 1 : 0;
@@ -1220,12 +1211,12 @@ export default {
           console.log("需要提交的对象为", _this.editDrugInfo);
           _this.$store
             .dispatch("pmedicines/updateDrugsAPI", _this.editDrugInfo)
-            .then(res => {
+            .then((res) => {
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
                   type: "success",
-                  message: "保存成功"
+                  message: "保存成功",
                 });
                 _this.hideDialog();
                 _this.GetTableData();
@@ -1233,7 +1224,7 @@ export default {
                 _this.$message({
                   showClose: true,
                   message: res.msg,
-                  type: "error"
+                  type: "error",
                 });
               }
               _this.loading = false;
@@ -1257,7 +1248,8 @@ export default {
       var _this = this;
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
-        .then(res => {
+        .then((res) => {
+          console.log("详情数据为",res.data)
           if (res.code == 200 && res.data.length > 0) {
             _this.drugsDetailInfo = res.data[0];
 
@@ -1266,7 +1258,7 @@ export default {
             _this.$message({
               showClose: true,
               message: "网络出错，请稍后重试",
-              type: "error"
+              type: "error",
             });
           }
         })
@@ -1276,21 +1268,21 @@ export default {
     },
     submitDrugInfo(formName) {
       var _this = this;
-      _this.$refs[formName].validate(valid => {
+      _this.$refs[formName].validate((valid) => {
         if (valid) {
           _this.loading = true;
           _this.insertDrugInfo.deleted = _this.insertDrugInfo.deleted ? 1 : 0;
           _this.insertDrugInfo.canorder = _this.insertDrugInfo.canorder ? 1 : 0;
           _this.insertDrugInfo.cansell = _this.insertDrugInfo.cansell ? 1 : 0;
-          _this.insertDrugInfo.categoryname=_this.categoryName;
+          _this.insertDrugInfo.categoryname = _this.categoryName;
           _this.$store
             .dispatch("pmedicines/insertDrugsAPI", _this.insertDrugInfo)
-            .then(res => {
+            .then((res) => {
               if (res.code == 200) {
                 _this.$message({
                   showClose: true,
                   type: "success",
-                  message: "添加成功"
+                  message: "添加成功",
                 });
                 _this.hideDialog();
                 _this.GetTableData();
@@ -1298,7 +1290,7 @@ export default {
                 _this.$message({
                   showClose: true,
                   message: res.msg,
-                  type: "error"
+                  type: "error",
                 });
               }
               _this.loading = false;
@@ -1367,7 +1359,7 @@ export default {
       _this.loading = true;
       _this.$store
         .dispatch("unit/getUnitList", _this.unitParams)
-        .then(res => {
+        .then((res) => {
           _this.unitList = res.data.list;
         })
         .catch(() => {
@@ -1379,7 +1371,7 @@ export default {
       console.log("需要编辑的id为", id);
       _this.$store
         .dispatch("pmedicines/getPmedicinesInfo", { id: id })
-        .then(res => {
+        .then((res) => {
           if (res.code == 200 && res.data.length > 0) {
             _this.editDrugInfo = res.data[0];
             _this.editDrugInfo.canorder = res.data[0].canorder == 1;
@@ -1390,7 +1382,7 @@ export default {
             _this.$message({
               showClose: true,
               message: "网络出错，请稍后重试",
-              type: "error"
+              type: "error",
             });
           }
         })
@@ -1401,16 +1393,16 @@ export default {
     /**
      * 获取目录信息
      */
-    GetTreeData: function() {
+    GetTreeData: function () {
       var _this = this;
       _this.$store
         .dispatch("psyslist/getPsysListBykey", {
-          drugType: _this.drugType
+          drugType: _this.drugType,
         })
-        .then(res => {
+        .then((res) => {
           _this.data = res;
           if (_this.data.length > 0) {
-            _this.data.forEach(function(info) {
+            _this.data.forEach(function (info) {
               if (info.id == _this.categoryId) {
                 _this.categoryName = info.name;
                 return;
@@ -1423,29 +1415,37 @@ export default {
      * 树节点点击事件
      * {点击数据} nodeData
      */
-    handleClick: function(nodeData) {
+    handleClick: function (nodeData) {
       this.categoryId = nodeData.id;
       this.categoryName = nodeData.name;
       this.insertDrugInfo.category = nodeData.id;
       this.insertDrugInfo.categoryname = nodeData.name;
       this.GetTableData();
     },
+    outUnitChange(value) {
+      var _this = this;
+      var unitName = value
+        ? _this.unitList.find((ele) => ele.id == value).name
+        : "";
+      _this.outstoreUnitName = unitName;
+      _this.insertDrugInfo.unitname = unitName;
+    },
     /**
      * 获取Table数据
      */
-    GetTableData: function() {
-      var _this=this;
+    GetTableData: function () {
+      var _this = this;
       _this.loading = true;
       if (_this.categoryId == 19205) {
         _this.params.params.category = -1;
       } else {
         _this.params.params.category = _this.categoryId;
       }
-      console.log("请求数据时",_this.params)
+      console.log("请求数据时", _this.params);
       _this.$store
         .dispatch("pmedicines/getPmedicinesByDrugType", _this.params)
-        .then(res => {
-          console.log("接收的数据为",res.list)
+        .then((res) => {
+          console.log("接收的数据为", res.list);
           _this.tableData = res.list;
           _this.total = res.total;
           _this.page = res.pageNum;
@@ -1456,12 +1456,12 @@ export default {
           if (err.hasOwnProperty("code")) {
             _this.$message({
               message: err.msg,
-              type: "error"
+              type: "error",
             });
           } else {
             _this.$message({
               message: "数据加载失败，请稍后重试",
-              type: "error"
+              type: "error",
             });
           }
           _this.loading = false;
@@ -1478,7 +1478,7 @@ export default {
     /**
      * 格式化时间
      */
-    dateFormat: function(row, column) {
+    dateFormat: function (row, column) {
       //row 表示一行数据, updateTime 表示要格式化的字段名称
       return dateFormat(row.insertdate);
     },
@@ -1497,8 +1497,8 @@ export default {
     hideAddCate() {
       var _this = this;
       _this.dialogFormVisible = false;
-    }
-  }
+    },
+  },
 };
 </script> 
 <style lang="scss" scope>
